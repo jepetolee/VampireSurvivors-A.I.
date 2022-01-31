@@ -8,4 +8,4 @@ import numpy as np
 
 class A2C(nn.Module):
     def __init__(self):
-        self
+        super(A2C,self).__init__()
