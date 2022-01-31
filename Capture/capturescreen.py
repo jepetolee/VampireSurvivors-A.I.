@@ -1,10 +1,9 @@
 import cv2 as cv
 import numpy as np
-from multiprocessing import Process, Queue
+from multiprocessing import Pool
 
 
 def finding_character(src):
-    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
     temp = cv.imread("./data/hero.png")
     temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
     result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
@@ -15,7 +14,6 @@ def finding_character(src):
 
 
 def finding_boxes(src):
-    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
     temp = cv.imread("./data/box.png")
     temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
     results = []
@@ -41,7 +39,7 @@ def finding_boxes(src):
 
 
 def finding_signs(src):  # capturing the treasure box's sign
-    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
+
     temp = cv.imread("./data/sign.png")
     temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
     results = []
@@ -66,8 +64,6 @@ def finding_signs(src):  # capturing the treasure box's sign
 
 
 def finding_gems(src):
-    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
-
     temp1 = cv.imread("./data/gem/crystal.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
     h1, w1 = temp1.shape
@@ -104,8 +100,6 @@ def finding_gems(src):
 
 
 def finding_entities(src):
-    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
-
     temp1 = cv.imread("./data/entity/entity.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
     h1, w1 = temp1.shape
@@ -142,8 +136,6 @@ def finding_entities(src):
 
 
 def finding_boss_entities(src):
-    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
-
     temp1 = cv.imread("./data/boss_entity/boss.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
     h1, w1 = temp1.shape
@@ -178,6 +170,8 @@ def finding_boss_entities(src):
 
     return result_bunddle
 
+
+#need to get multiprocessing&monitor capture to build data
 
 
 def main():
