@@ -3,6 +3,7 @@ import numpy as np
 from multiprocessing import Pool
 import pyautogui
 
+
 def finding_character(src):
     temp = cv.imread("./data/hero.png")
     temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
@@ -228,16 +229,16 @@ def finding_entities(src):
 
     temp_all = [temp1, temp2, temp3, temp4, temp5,
                 temp6, temp7, temp8, temp9, temp10,
-                temp11,temp12,temp13,temp14,temp15,
-                temp16,temp17,temp18,temp19,temp20,
-                temp21,temp22,temp23,temp24,temp25,
-                temp26,temp27]
+                temp11, temp12, temp13, temp14, temp15,
+                temp16, temp17, temp18, temp19, temp20,
+                temp21, temp22, temp23, temp24, temp25,
+                temp26, temp27]
 
     threshold = [1000000, 100000, 900000, 500000, 500000,
                  700000, 1200000, 600000, 600000, 400000,
-                 900000,6200000,5000000,6000000,5000000,
-                 5500000,5000000,3000000,3500000,2500000,
-                 3000000,2500000,3000000, 600000, 600000,
+                 900000, 6200000, 5000000, 6000000, 5000000,
+                 5500000, 5000000, 3000000, 3500000, 2500000,
+                 3000000, 2500000, 3000000, 600000, 600000,
                  500000, 300000]
     result_bundle = []
     cnt = 0
@@ -254,7 +255,7 @@ def finding_entities(src):
                     for y in range(sy, sy + h):
                         try:
                             result[y][x] = 9999999
-                            src[y][x] = 9999999 # -MAX
+                            src[y][x] = 9999999  # -MAX
                         except IndexError:  # ignore out of bounds
                             pass
 
