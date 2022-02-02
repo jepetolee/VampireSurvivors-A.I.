@@ -120,20 +120,49 @@ def finding_entities(src):
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
     h1, w1 = temp1.shape
     temp1 = (temp1, h1, w1)
-    temp2 = cv.imread("./data/entity/golem.png")
+    temp2 = cv.imread("./data/entity/golem_l.png")
     temp2 = cv.cvtColor(temp2, cv.COLOR_RGB2GRAY)
     h2, w2 = temp2.shape
     temp2 = (temp2, h2, w2)
-    temp3 = cv.imread("./data/entity/golem2.png")
+    temp3 = cv.imread("./data/entity/golem2_r.png")
     temp3 = cv.cvtColor(temp3, cv.COLOR_RGB2GRAY)
     h2, w2 = temp3.shape
     temp3 = (temp3, h2, w2)
-    temp4 = cv.imread("./data/entity/bat.png")
+    temp4 = cv.imread("./data/entity/bat_s_l.png")
     temp4 = cv.cvtColor(temp4, cv.COLOR_RGB2GRAY)
     h4, w4 = temp4.shape
     temp4 = (temp4, h4, w4)
-    temp_all = [temp1, temp2, temp3, temp4]
-    threshold = [1100000, 450000, 10000, 15000]
+    temp5 = cv.imread("./data/entity/bat_m_l.png")
+    temp5 = cv.cvtColor(temp5, cv.COLOR_RGB2GRAY)
+    h5, w5 = temp5.shape
+    temp5 = (temp5, h5, w5)
+    temp6 = cv.imread("./data/entity/bat_s_r.png")
+    temp6 = cv.cvtColor(temp6, cv.COLOR_RGB2GRAY)
+    h6, w6 = temp6.shape
+    temp6 = (temp6, h6, w6)
+    temp7 = cv.imread("./data/entity/bat_m_r.png")
+    temp7 = cv.cvtColor(temp7, cv.COLOR_RGB2GRAY)
+    h7, w7 = temp7.shape
+    temp7 = (temp7, h7, w7)
+    temp8 = cv.imread("./data/entity/golem_r.png")
+    temp8 = cv.cvtColor(temp8, cv.COLOR_RGB2GRAY)
+    h8, w8 = temp8.shape
+    temp8 = (temp8, h8, w8)
+    temp9 = cv.imread("./data/entity/golem2_l.png")
+    temp9 = cv.cvtColor(temp9, cv.COLOR_RGB2GRAY)
+    h9, w9 = temp9.shape
+    temp9 = (temp9, h9, w9)
+    temp10 = cv.imread("./data/entity/golem3_r.png")
+    temp10 = cv.cvtColor(temp10, cv.COLOR_RGB2GRAY)
+    h10, w10 = temp10.shape
+    temp10 = (temp10, h10, w10)
+    temp11 = cv.imread("./data/entity/golem3_l.png")
+    temp11 = cv.cvtColor(temp11, cv.COLOR_RGB2GRAY)
+    h11, w11 = temp11.shape
+    temp11 = (temp11, h11, w11)
+    temp_all = [temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11]
+
+    threshold = [100000, 1600000, 500000, 500000, 500000, 700000, 500000, 700000, 500000, 1400000, 900000]
     result_bundle = []
     cnt = 0
     for temp, h, w in temp_all:
@@ -207,14 +236,21 @@ def main():
     img = cv.imread("test1.png")
 
     results = finding_entities(img)
-    rand = 200
+    rand = 0
     green = 0
-
+    blue = 0
+    i = 0
     for result in results:
         for (x, y, h, w) in result:
-            cv.rectangle(img, (x, y), (x + w, y + h), (0, green, rand), 3)
-        rand = rand - 200
-        green = 300
+            cv.rectangle(img, (x, y), (x + w, y + h), (blue, green, rand), 3)
+        if i % 3 == 0:
+            rand = rand + 30
+        elif i % 3 == 1:
+            green = green + 50
+        else:
+            blue = blue + 70
+        i = i + 1
+
     cv.imwrite("output.png", img)
 
 
