@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a372e74-4257-4f6e-8edb-2485b218852e" name="변경" comment="toy progject in korean new years day">
-      <change beforePath="$PROJECT_DIR$/.idea/VampireSurvivorsRL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/VampireSurvivorsRL.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/capturescreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/capturescreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/output.png" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/output.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RL/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RL/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play.py" beforeDir="false" afterPath="$PROJECT_DIR$/play.py" afterDir="false" />
     </list>
@@ -56,7 +50,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/source/repos/Linear_Algebra/Rust" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -64,7 +58,7 @@
       <recent name="C:\Users\timet\PycharmProjects\VampireSurvivorsRL\Capture" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.agent">
+  <component name="RunManager" selected="Python.play">
     <configuration name="MCTS" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="VampireSurvivorsRL" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -193,9 +187,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.play" />
         <item itemvalue="Python.agent" />
         <item itemvalue="Python.capturescreen" />
-        <item itemvalue="Python.play" />
         <item itemvalue="Python.model" />
         <item itemvalue="Python.MCTS" />
       </list>
