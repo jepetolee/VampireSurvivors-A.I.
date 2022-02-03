@@ -75,6 +75,7 @@ def finding_signs(src):  # capturing the treasure box's sign
 
 
 def finding_gems(src):
+    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
     temp1 = cv.imread("./data/gem/crystal.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
     h1, w1 = temp1.shape
@@ -89,7 +90,7 @@ def finding_gems(src):
     temp3 = (temp3, h3, w3)
 
     temp_all = [temp1, temp2, temp3]
-    thresholds = [100000, 5000, 10000]
+    thresholds = [100000, 210000, 100000]
     result_bundle = []
     adder = 0
     for temp, h, w in temp_all:
@@ -97,6 +98,7 @@ def finding_gems(src):
         results = []
         while True:
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+            print(min_val)
             if min_val < thresholds[adder]:
                 sx, sy = min_loc
                 for x in range(sx - 10, sx + w + 10):
@@ -112,13 +114,14 @@ def finding_gems(src):
             else:
                 break
         adder = adder + 1
+        print("cut")
         result_bundle.append(results)
 
     return result_bundle
 
 
 def finding_entities(src):
-    tc =time.time()
+    tc = time.time()
     src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
     temp1 = cv.imread("./data/entity/big_bat.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
@@ -228,20 +231,54 @@ def finding_entities(src):
     temp27 = cv.cvtColor(temp27, cv.COLOR_RGB2GRAY)
     h27, w27 = temp27.shape
     temp27 = (temp27, h27, w27)
+    temp28 = cv.imread("./data/entity/plant_l.png")
+    temp28 = cv.cvtColor(temp28, cv.COLOR_RGB2GRAY)
+    h28, w28 = temp28.shape
+    temp28 = (temp28, h28, w28)
+    temp29 = cv.imread("./data/entity/plant_r.png")
+    temp29 = cv.cvtColor(temp29, cv.COLOR_RGB2GRAY)
+    h29, w29 = temp29.shape
+    temp29 = (temp29, h29, w29)
+    temp30 = cv.imread("./data/entity/neplant.png")
+    temp30 = cv.cvtColor(temp30, cv.COLOR_RGB2GRAY)
+    h30, w30 = temp30.shape
+    temp30 = (temp30, h30, w30)
+    temp31 = cv.imread("./data/entity/neplant2.png")
+    temp31 = cv.cvtColor(temp31, cv.COLOR_RGB2GRAY)
+    h31, w31 = temp31.shape
+    temp31 = (temp31, h31, w31)
+    temp32 = cv.imread("./data/entity/neplant3.png")
+    temp32 = cv.cvtColor(temp32, cv.COLOR_RGB2GRAY)
+    h32, w32 = temp32.shape
+    temp32 = (temp32, h32, w32)
+    temp33 = cv.imread("./data/entity/neplant4.png")
+    temp33 = cv.cvtColor(temp33, cv.COLOR_RGB2GRAY)
+    h33, w33 = temp33.shape
+    temp33 = (temp33, h33, w33)
+    temp34 = cv.imread("./data/entity/mummy_l.png")
+    temp34 = cv.cvtColor(temp34, cv.COLOR_RGB2GRAY)
+    h34, w34 = temp34.shape
+    temp34 = (temp34, h34, w34)
+    temp35 = cv.imread("./data/entity/mummy_r.png")
+    temp35 = cv.cvtColor(temp35, cv.COLOR_RGB2GRAY)
+    h35, w35 = temp35.shape
+    temp35 = (temp35, h35, w35)
 
     temp_all = [temp1, temp2, temp3, temp4, temp5,
                 temp6, temp7, temp8, temp9, temp10,
                 temp11, temp12, temp13, temp14, temp15,
                 temp16, temp17, temp18, temp19, temp20,
                 temp21, temp22, temp23, temp24, temp25,
-                temp26, temp27]
+                temp26, temp27, temp28, temp29,temp30,
+                temp31, temp32, temp33,temp34,temp35]
 
     threshold = [1000000, 100000, 900000, 500000, 500000,
-                 700000, 1200000, 600000, 600000, 400000,
-                 900000, 6200000, 5000000, 6000000, 5000000,
-                 5500000, 5000000, 3000000, 3500000, 2500000,
+                 700000, 1150000, 600000, 600000, 400000,
+                 900000, 6200000, 4500000, 6000000, 5000000,
+                 5500000, 5000000, 3000000, 3500000, 2700000,
                  3000000, 2500000, 3000000, 600000, 600000,
-                 500000, 300000]
+                 470000, 200000, 4000000, 6000000,3000000,
+                 4600000, 4700000, 3000000, 2300000, 1200000]
     result_bundle = []
     cnt = 0
     for temp, h, w in temp_all:
@@ -268,8 +305,8 @@ def finding_entities(src):
         cnt = cnt + 1
         print("cut")
         result_bundle.append(results)
-   # tcl = time.time()
-    #print(tcl -tc)
+    # tcl = time.time()
+    # print(tcl -tc)
     return result_bundle
 
 
@@ -362,16 +399,18 @@ def capture_screen():
     drops = finding_drops(img_frame)
     '''
 
-    #show_changed env to model
+    # show_changed env to model
     return img_frame
+
 
 def game_over():
     time.sleep(5)
     return True
-def main():
 
+
+def main():
     img = cv.imread("test1.png")
-    #img = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    # img = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
     src = capture_screen()
     results = finding_entities(img)
     rand = 0
