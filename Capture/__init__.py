@@ -1,1 +1,1 @@
-from capturescreen import *
+from .capturescreen import *

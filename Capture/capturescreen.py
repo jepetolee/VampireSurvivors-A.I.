@@ -1,6 +1,7 @@
+import time
+
 import cv2 as cv
 import numpy as np
-from multiprocessing import Pool
 import pyautogui
 
 
@@ -20,7 +21,7 @@ def finding_character(src):
         min_loc_def = min_loc2
         h, w = temp2.shape
 
-    return min_loc_def[0], min_loc_def[1], h, w
+    return (min_loc_def[0], min_loc_def[1], h, w)
 
 
 def finding_boxes(src):
@@ -117,6 +118,7 @@ def finding_gems(src):
 
 
 def finding_entities(src):
+    tc =time.time()
     src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
     temp1 = cv.imread("./data/entity/big_bat.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
@@ -266,7 +268,8 @@ def finding_entities(src):
         cnt = cnt + 1
         print("cut")
         result_bundle.append(results)
-
+   # tcl = time.time()
+    #print(tcl -tc)
     return result_bundle
 
 
@@ -307,17 +310,69 @@ def finding_boss_entities(src):
     return result_bundle
 
 
+def finding_drops(src):
+    temp1 = cv.imread("./data/boss_entity/boss.png")
+    temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
+    h1, w1 = temp1.shape
+    temp1 = (temp1, h1, w1)
+    temp2 = cv.imread("./data/boss_entity/boss.png")
+    temp2 = cv.cvtColor(temp2, cv.COLOR_RGB2GRAY)
+    h2, w2 = temp2.shape
+    temp2 = (temp2, h2, w2)
+
+    temp_all = [temp1, temp2]
+
+    result_bundle = []
+    for temp, h, w in temp_all:
+        result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
+        results = []
+        while True:
+            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+            if min_val < 200000:
+                sx, sy = min_loc
+                for x in range(sx, sx + w):
+                    for y in range(sy, sy + h):
+                        try:
+                            result[y][x] = 999999  # -MAX
+                        except IndexError:  # ignore out of bounds
+                            pass
+
+                res = (min_loc[0], min_loc[1], h, w)
+                results.append(res)
+            else:
+
+                break
+        result_bundle.append(results)
+
+    return result_bundle
+
+
 # need to get multiprocessing&monitor capture to build data
 def capture_screen():
-    src = pyautogui.screenshot()
+    src = pyautogui.screenshot(region=(0, 0, 28, 28))
     img_frame = np.array(src)
     img_frame = cv.cvtColor(img_frame, cv.COLOR_RGB2GRAY)
+    '''
+    entities = finding_entities(img_frame)
+    boxes = finding_boxes(img_frame)
+    character = finding_character(img_frame)
+    signs = finding_signs(img_frame)
+    gems = finding_gems(img_frame)
+    boss = finding_boss_entities(img_frame)
+    drops = finding_drops(img_frame)
+    '''
+
+    #show_changed env to model
     return img_frame
 
-
+def game_over():
+    time.sleep(5)
+    return True
 def main():
-    img = cv.imread("test1.png")
 
+    img = cv.imread("test1.png")
+    #img = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    src = capture_screen()
     results = finding_entities(img)
     rand = 0
     green = 0
@@ -327,11 +382,11 @@ def main():
         for (x, y, h, w) in result:
             cv.rectangle(img, (x, y), (x + w, y + h), (blue, green, rand), 3)
         if i % 3 == 0:
-            rand = rand + 30
+            rand = rand + 15
         elif i % 3 == 1:
-            green = green + 50
+            green = green + 25
         else:
-            blue = blue + 70
+            blue = blue + 35
         i = i + 1
 
     cv.imwrite("output.png", img)
