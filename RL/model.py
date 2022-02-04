@@ -10,7 +10,7 @@ import numpy as np
 class A2C(nn.Module):
     def __init__(self):
         super(A2C, self).__init__()
-        self.conv1 = nn.Conv2d(1, 4, 5, stride=1)
+        self.conv1 = nn.Conv2d(1,4, 5, stride=1)
         self.conv2 = nn.Conv2d(4, 16, 10, stride=2)
         self.conv3 = nn.Conv2d(16, 32, 5, stride=2)
         self.p = nn.Linear(128, 4)
