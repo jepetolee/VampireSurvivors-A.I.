@@ -11,10 +11,11 @@ gamma = 0.75
 
 
 def run():
-    count = 1
+    count = 30
     model = module.A2C()
-    optimizer = optim.Adam(model.parameters(), lr=0.1)
-    model.load_state_dict(torch.load('./save.pt'))
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
+
+    # model.load_state_dict(torch.load('./save.pt'))
     while count > 0:
         s_list, a_list, r_list = agent.run_once(model)
         s_latest = torch.tensor(s_list[-1]).float().reshape(-1, 1, 28, 28)
@@ -34,7 +35,8 @@ def run():
 
         loss = -(torch.log(pi_all) * advantage.detach().mean()) + \
                torch.nn.functional.l1_loss(model.value(s_vec).reshape(-1), target_vec.reshape(-1))
-        loss = loss.mean()
+        loss = torch.log(loss).mean()
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()

@@ -18,8 +18,10 @@ def run_once(model):
         setting = torch.tensor(setting).float().reshape(-1,1,28,28)
 
         prob = model.pi(x=setting, softmax_dim=0)
+
         prob = Categorical(prob).sample().numpy()
         a_list.append(prob)
+
         if prob == 0:
             pyautogui.press("up")
             time.sleep(0.1)
