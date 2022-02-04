@@ -263,6 +263,23 @@ def finding_entities(src):
     temp35 = cv.cvtColor(temp35, cv.COLOR_RGB2GRAY)
     h35, w35 = temp35.shape
     temp35 = (temp35, h35, w35)
+    temp36 = cv.imread("./data/entity/zombie_l.png")
+    temp36 = cv.cvtColor(temp36, cv.COLOR_RGB2GRAY)
+    h36, w36 = temp36.shape
+    temp36 = (temp36, h36, w36)
+    temp37 = cv.imread("./data/entity/zombie_r.png")
+    temp37 = cv.cvtColor(temp37, cv.COLOR_RGB2GRAY)
+    h37, w37 = temp37.shape
+    temp37 = (temp37, h37, w37)
+    temp38 = cv.imread("./data/entity/huge_plant_l.png")
+    temp38 = cv.cvtColor(temp38, cv.COLOR_RGB2GRAY)
+    h38 , w38 = temp38.shape
+    temp38 = (temp38, h38, w38)
+    temp39 = cv.imread("./data/entity/huge_plant_r.png")
+    temp39 = cv.cvtColor(temp39, cv.COLOR_RGB2GRAY)
+    h39, w39 = temp39.shape
+    temp39 = (temp39, h39, w39)
+
 
     temp_all = [temp1, temp2, temp3, temp4, temp5,
                 temp6, temp7, temp8, temp9, temp10,
@@ -270,7 +287,8 @@ def finding_entities(src):
                 temp16, temp17, temp18, temp19, temp20,
                 temp21, temp22, temp23, temp24, temp25,
                 temp26, temp27, temp28, temp29,temp30,
-                temp31, temp32, temp33,temp34,temp35]
+                temp31, temp32, temp33,temp34,temp35,
+                temp36,temp37,temp38,temp39]
 
     threshold = [1000000, 100000, 900000, 500000, 500000,
                  700000, 1150000, 600000, 600000, 400000,
@@ -278,7 +296,8 @@ def finding_entities(src):
                  5500000, 5000000, 3000000, 3500000, 2700000,
                  3000000, 2500000, 3000000, 600000, 600000,
                  470000, 200000, 4000000, 6000000,3000000,
-                 4600000, 4700000, 3000000, 2300000, 1200000]
+                 5500000, 4700000, 3500000, 2300000, 1200000,
+                 320000, 300000,550000, 200000]
     result_bundle = []
     cnt = 0
     for temp, h, w in temp_all:
