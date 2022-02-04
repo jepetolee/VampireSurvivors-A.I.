@@ -36,7 +36,6 @@ def run():
         loss = -(torch.log(pi_all) * advantage.detach().mean()) + \
                torch.nn.functional.l1_loss(model.value(s_vec).reshape(-1), target_vec.reshape(-1))
         loss = torch.log(loss).mean()
-
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
