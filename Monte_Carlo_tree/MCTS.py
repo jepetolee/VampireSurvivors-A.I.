@@ -6,142 +6,87 @@ import random
 
 class Node:
     def __init__(self):
-        self.parent = None
-        self.child_N = collections.defaultdict(float)
-        self.child_W = collections.defaultdict(float)
+        self.leaf = True
+        self.terminal = False
 
-    def add_virtual_loss(self, up_to=None): pass
+    def expand(self, moves):
+        m = len(moves)
+        if m == 0:
+            self.terminal = True
+        else:
+            self.S = numpy.zeros(m)
 
-    def revert_virtual_loss(self, up_to=None): pass
+            self.T = numpy.full(m, 0.001)
 
-    def revert_visits(self, up_to=None): pass
+            self.moves = moves
 
-    def backup_value(self, value, up_to=None): pass
+            self.children = [Node() for a in range(m)]
+            self.leaf = False
+
+    def update(self, idx, score):
+        self.S[idx] += score
+        self.T[idx] += 1
+
+    def choose(self):
+        idx = numpy.argmax(self.S / self.T + numpy.sqrt(2.0 / self.T * numpy.log(1 + self.T.sum())))
+        return idx
 
 
 class MCTS_Node:
-    def __init__(self, state, n_actions, TreeEnv, action=None, parent=None):
-        self.tree = TreeEnv
-        if parent is None:
-            self.depth = 0
-            parent = Node()
+    def __init__(self):
+        self.node =Node()
+        self.children = list()
+
+    def search(self,items):
+        self.mcts(self.node,items)
+        idx = numpy.argmax(self.node.T)
+        move = node.moves[idx]
+        return move
+
+    def mcts(self, node,items):
+        if node.leaf:
+            node.expand(items)
+            rollout = True
         else:
-            self.depth = parent.depth + 1
-        self.parent = parent
-        self.action = action
-        self.state = state
-        self.n_actions = n_actions
-        self.is_expanded = False
-        self.n_vlosses = 0
-        self.child_N = np.zeros([n_actions], dtype=np.float32)
-        self.child_W = np.zeros([n_actions], dtype=np.float32)
-        self.original_prior = np.zeros([n_actions], dtype=np.float32)
-        self.child_prior = np.zeros([n_actions], dtype=np.float32)
-        self.children = {}
+            rollout = False
 
-    @property
-    def N(self):
-        return self.parent.child_N[self.action]
+        if node.terminal:
+            return 0
 
-    @N.setter
-    def N(self, value):
-        self.parent.child_N = value
+        idx = node.choose()
+        move = node.moves[idx]
+        if self.game.make_move(move):
+            val = 1
+        elif rollout:
+            val = -self.rollout(items)
+        else:
+            val = -self.mcts(node.children[idx],items)
 
-    @property
-    def W(self):
-        return self.parent.child_W[self.action]
+        node.update(idx, val)
+        return val
 
-    @W.setter
-    def W(self, value):
-        self.parent.child_W = value
+    def rollout(self,items):
+        moves = items
+        if len(moves) == 0:  # game is drawn
+            return 0
+        move = random.choice(moves)
+        if self.game.make_move(move):  # current player won
+            val = 1
+        else:
+            val = -self.rollout(items)
+        self.game.unmake_move()
+        return val
 
-    @property
-    def Q(self):
 
-        return self.W / (1 + self.N)
-
-    @property
-    def child_Q(self):
-        return self.child_W / (1 + self.child_N)
-
-    @property
-    def child_U(self):
-        return 1.54 * math.sqrt(1 + self.N) * self.child_prior / (1 + self.child_N)
-
-    @property
-    def child_action_score(self):
-        return self.child_Q + self.child_U
-
-    def select_leaf(self):
-        current = self
-        while True:
-            current.N += 1
-            if not current.is_expanded:
-                break
-            best_move = np.argmax(current.child_action_score)
-            current = current.maybe_add_child(best_move)
-        return current
-
-    def may_be_child(self, action):
-        if action not in self.children:
-            newstate = self.tree.next_state(self.state, action)
-            self.children[action] = MCTS_Node(newstate, self.n_actions,
-                                         self.tree, action=action, parent=self)
-
-        return self.children[action]
-
-    def add_virtual_loss(self, up_to):
-        self.n_vlosses += 1
-        self.W -= 1
-        if self.parent is None or self is up_to:
-            return
-        self.parent.add_virtual_loss(up_to)
-
-    def revert_virtual_loss(self, up_to):
-        self.n_vlosses -= 1
-        self.W += 1
-        if self.parent is None or self is up_to:
-            return
-        self.parent.revert_virtual_loss(up_to)
-
-    def revert_visits(self, up_to):
-        self.N -= 1
-        if self.parent is None or self is up_to:
-            return
-
-        self.parent.revert_visits(up_to)
-
-    def incorporate_estimates(self, action_probs, value, up_to):
-
-        if self.is_expanded:
-            self.revert_visits(up_to=up_to)
-            return
-        self.is_expanded = True
-
-        self.original_prior = self.child_prior = action_probs
-        self.child_W = np.ones([self.n_actions], dtype=np.float32) * value
-        self.backup_value(value, up_to=up_to)
-
-    def backup_value(self, value, up_to):
-        self.W += value
-        if self.parent is None or self is up_to:
-            return
-        self.parent.backup_value(value, up_to)
-
-    def visits_as_probs(self,squash=False):
-        probs = self.child_N
-        if squash:
-            probs = probs ** .95
-        return probs/np.sum(probs)
 
 class MCTS:
     def __init__(self):
-        self.Node =MCTS_Node()
+        self.Node = MCTS_Node()
 
-    def input(self,items):
+    def input(self, items):
+        self.Node.search(items)
         return 0
-    def append_reward(self,reward):
+
+    def append_reward(self, reward):
+        self.Node.
         return 0
-
-
-
