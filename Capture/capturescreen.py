@@ -422,9 +422,64 @@ def capture_screen():
     return img_frame
 
 
+def item_selection():
+    src = pyautogui.screenshot()
+    src = np.array(src)
+    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
+    dropbox = cv.imread("Capture/data/dropbox.png")
+    dropbox = cv.cvtColor(dropbox, cv.COLOR_RGB2GRAY)
+    result = cv.matchTemplate(src, dropbox, cv.TM_SQDIFF)
+    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+    selection = cv.imread("Capture/data/selection.png")
+    selection = cv.cvtColor(selection, cv.COLOR_RGB2GRAY)
+    result2 = cv.matchTemplate(src, selection, cv.TM_SQDIFF)
+    min_val1, max_val2, min_loc1, max_loc2 = cv.minMaxLoc(result2)
+    if min_val < 23000:
+        return 1
+    elif min_val1<23000:
+        return 2
+    return 0
+
+def selection():
+    src = pyautogui.screenshot()
+    src = np.array(src)
+    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
+    temp1 = cv.imread("./data/gem/crystal.png")
+    temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
+    temp2 = cv.imread("./data/gem/ruby.png")
+    temp2 = cv.cvtColor(temp2, cv.COLOR_RGB2GRAY)
+    temp3 = cv.imread("./data/gem/emerald.png")
+    temp3 = cv.cvtColor(temp3, cv.COLOR_RGB2GRAY)
+
+    temp_all = [temp1, temp2, temp3]
+    thresholds = [100000, 210000, 100000]
+    adder = 0
+    results =[]
+    for temp in temp_all:
+        result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
+
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+        print(min_val)
+        if min_val < thresholds[adder]:
+            results.append(adder)
+        else:
+            break
+        adder = adder + 1
+        print("cut")
+    return results
+
 def game_over():
-    time.sleep(5)
-    return True
+    src = pyautogui.screenshot()
+    src = np.array(src)
+    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
+    temp = cv.imread("Capture/data/end.png")
+    temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
+    result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
+    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+    if min_val<23000:
+        return True
+    else:
+        return False
 
 
 def main():
@@ -451,4 +506,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+
+    game_over()

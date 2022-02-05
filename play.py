@@ -11,7 +11,7 @@ gamma = 0.75
 
 
 def run():
-    count = 30
+    count = 1
     model = module.A2C()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 

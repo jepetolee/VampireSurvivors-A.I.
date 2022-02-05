@@ -3,19 +3,29 @@ import time
 import pyautogui
 from torch.distributions import Categorical
 import Capture
+import Monte_Carlo_tree as mcts
 import RL.model as module
 
 
 def run_once(model):
     ts = time.time()
-    s_list,a_list,r_list =list(),list(),list()
-    for i in range(10):
-        #game_over = Capture.game_over()
-        #if game_over is True:
-         #   break
+    mcts_worker = mcts.MCTS()
+    reward = 0
+    s_list, a_list, r_list = list(), list(), list()
+    while 1:
+        game_over = Capture.game_over()
+        if game_over is True:
+            break
+        selection = Capture.item_selection()
+        if selection == 1:
+            time.sleep(10)
+            pyautogui.press("enter")
+        elif selection == 2:
+            items = Capture.selection()
+            mcts_worker.input(items)
         setting = Capture.capture_screen()
         s_list.append(setting)
-        setting = torch.tensor(setting).float().reshape(-1,1,28,28)
+        setting = torch.tensor(setting).float().reshape(-1, 1, 28, 28)
 
         prob = model.pi(x=setting, softmax_dim=0)
 
@@ -36,7 +46,7 @@ def run_once(model):
             time.sleep(0.1)
 
         tl = time.time()
-        reward = (tl-ts)/60
+        reward = (tl - ts) / 60
         r_list.append(reward)
-
-    return s_list,a_list,r_list
+    mcts_worker.append_reward(reward)
+    return s_list, a_list, r_list

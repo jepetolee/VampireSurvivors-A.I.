@@ -5,10 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a372e74-4257-4f6e-8edb-2485b218852e" name="변경" comment="toy progject in korean new years day">
+      <change afterPath="$PROJECT_DIR$/Capture/data/dropbox.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Capture/data/selection.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Capture/capturescreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/capturescreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/output.png" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/output.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/test1.png" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/test1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Monte_Carlo_tree/MCTS.py" beforeDir="false" afterPath="$PROJECT_DIR$/Monte_Carlo_tree/MCTS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Monte_Carlo_tree/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Monte_Carlo_tree/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RL/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/play.py" beforeDir="false" afterPath="$PROJECT_DIR$/play.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,15 +55,19 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Capture/data" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\timet\PycharmProjects\VampireSurvivorsRL\Capture\data" />
+      <recent name="C:\Users\timet\PycharmProjects\VampireSurvivorsRL\RL" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\timet\PycharmProjects\VampireSurvivorsRL\Capture" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.capturescreen">
+  <component name="RunManager" selected="Python.play">
     <configuration name="MCTS" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="VampireSurvivorsRL" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -109,7 +117,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\COM\anaconda3\python.exe" />
+      <option name="SDK_HOME" value="C:\Users\timet\Anaconda3\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Capture" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -188,8 +196,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.capturescreen" />
         <item itemvalue="Python.play" />
+        <item itemvalue="Python.capturescreen" />
         <item itemvalue="Python.agent" />
         <item itemvalue="Python.model" />
         <item itemvalue="Python.MCTS" />
