@@ -88,5 +88,5 @@ class MCTS:
         return 0
 
     def append_reward(self, reward):
-        self.Node.
+#        self.Node.
         return 0
