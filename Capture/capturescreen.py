@@ -1,3 +1,5 @@
+import time
+
 import cv2 as cv
 import numpy as np
 import pyautogui
@@ -465,6 +467,7 @@ def capture_screen():
 
 
 def item_selection():
+    time.sleep(3)
     src = pyautogui.screenshot()
     src = np.array(src)
     src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
@@ -476,13 +479,19 @@ def item_selection():
     select = cv.cvtColor(select, cv.COLOR_RGB2GRAY)
     result2 = cv.matchTemplate(src, select, cv.TM_SQDIFF)
     min_val1, max_val2, min_loc1, max_loc2 = cv.minMaxLoc(result2)
-
-    if min_val < 14000000:
-        pydirectinput.press("enter")
+    print(min_val)
+    if min_val < 15000000:
+        pyautogui.moveTo(950, 880)
+        pyautogui.click()
+        time.sleep(20)
+        pyautogui.moveTo(950, 880)
+        pyautogui.click()
         return 1
 
-    elif min_val1 < 1200000000:
-        pydirectinput.press("enter")
+    elif min_val1 <1468192:
+        print("this")
+        pyautogui.moveTo(930, 540)
+        pyautogui.click()
         return 2
     return 0
 

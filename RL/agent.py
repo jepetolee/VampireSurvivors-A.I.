@@ -39,7 +39,6 @@ def run_once(model,r_latest):
     reward = 0
     s_list, a_list, r_list = list(), list(), list()
     while 1:
-        time.sleep(0.1)
         game_over = Capture.game_over()
         if game_over is True:
             time.sleep(3)

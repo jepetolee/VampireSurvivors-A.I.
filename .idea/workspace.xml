@@ -8,17 +8,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/VampireSurvivorsRL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/VampireSurvivorsRL.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/capture_item.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Capture/capturescreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/capturescreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/data/boss_entity/boss.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/data/dropbox.png" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/data/dropbox.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/data/end.png" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/data/end.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/data/selection.png" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/data/selection.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/output.png" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/output.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Monte_Carlo_tree/MCTS.py" beforeDir="false" afterPath="$PROJECT_DIR$/Monte_Carlo_tree/MCTS.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RL/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RL/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play.py" beforeDir="false" afterPath="$PROJECT_DIR$/play.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/save.pt" beforeDir="false" afterPath="$PROJECT_DIR$/save.pt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +62,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Capture/data" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -131,7 +124,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\COM\anaconda3\python.exe" />
+      <option name="SDK_HOME" value="C:\Users\Administrator\anaconda3\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Capture" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -173,9 +166,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\COM\anaconda3\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/play.py" />
