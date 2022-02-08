@@ -14,8 +14,8 @@ def run():
     count = 10000
     model = module.A2C()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
-
-    model.load_state_dict(torch.load('./save.pt'))
+    device= torch.device('cuda')
+#    model.load_state_dict(torch.load('./save.pt'))
     r_latest = 0
     while count > 0:
 
@@ -52,7 +52,6 @@ def run():
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        print("gg")
         count -= 1
         if count%1==0:
             torch.save(model.state_dict(),"./save.pt")
