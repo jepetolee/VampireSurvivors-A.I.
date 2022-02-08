@@ -5,6 +5,7 @@ import numpy as np
 import pyautogui
 import multiprocessing as mp
 import pydirectinput
+
 '''
 def finding_boxes(src):
     temp = cv.imread("Capture/data/box.png")
@@ -326,6 +327,7 @@ def finding_boss_entities(src):
     return image
 '''
 
+
 def capture_screen():
     src = pyautogui.screenshot(region=(100, 0, 1724, 1080))
     img_frame = np.array(src)
@@ -381,21 +383,26 @@ def item_selection(mcts):
             pyautogui.moveTo(950, 880)
             pyautogui.click()
         return
-    return 0
 
 
 def selection():
     src = pyautogui.screenshot()
     src = np.array(src)
     src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
-    temp = cv.imread("Capture/data/selection.png")
-    temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
-    result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-    if min_val < 14000000:
-        return True
-    else:
-        return False
+    temp1 = cv.imread("Capture/data/selection.png")
+    temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
+    case = []
+    temp_all = [temp1, ]
+    thresholds = [2500000, ]
+    adder = 0
+    for temp in temp_all:
+        result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+        print(min_val)
+        if min_val < thresholds[adder]:
+            case.append(adder)
+        adder += 1
+    return case
 
 
 def game_over():
