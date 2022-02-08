@@ -38,6 +38,7 @@ def run_once(model,r_latest):
 
     ts = time.time()
     mcts_worker = mcts.MCTS()
+    mcts_worker.backup()
     s_list, a_list, r_list = list(), list(), list()
     while 1:
         game_over = Capture.game_over()
@@ -54,7 +55,7 @@ def run_once(model,r_latest):
             pyautogui.click()
             break
 
-        Capture.item_selection()
+        Capture.item_selection(mcts_worker)
         setting = Capture.capture_screen()
         s_list.append(setting)
 
@@ -72,7 +73,6 @@ def run_once(model,r_latest):
 
         elif prob == 2:
             pydirectinput.press("left")
-
         elif prob == 3:
             pydirectinput.press("right")
 
@@ -81,7 +81,6 @@ def run_once(model,r_latest):
     r_list.pop()
     reward = (tl - ts) - r_latest
     r_list.append(reward/60)
-    mcts_worker.append_reward(reward)
+    mcts_worker.append_reward(int(reward/60))
     return s_list, a_list, r_list
-
 

@@ -6,87 +6,67 @@ import random
 
 class Node:
     def __init__(self):
-        self.leaf = True
-        self.terminal = False
+        self.tensor = np.zeros((100, 20), np.int32)
+        self.sequence = 0
 
-    def expand(self, moves):
-        m = len(moves)
-        if m == 0:
-            self.terminal = True
-        else:
-            self.S = numpy.zeros(m)
-
-            self.T = numpy.full(m, 0.001)
-
-            self.moves = moves
-
-            self.children = [Node() for a in range(m)]
-            self.leaf = False
+    def expand(self, items):
+        self.S = self.tensor[self.sequence]
+        self.items = items
 
     def update(self, idx, score):
         self.S[idx] += score
-        self.T[idx] += 1
+        self.tensor[self.sequence] = self.S
+        self.sequence += 1
 
     def choose(self):
-        idx = numpy.argmax(self.S / self.T + numpy.sqrt(2.0 / self.T * numpy.log(1 + self.T.sum())))
+        idx = 0
+        for index in self.items:
+            if self.S[index] > self.S[idx]:
+                idx = index
+
         return idx
 
 
 class MCTS_Node:
     def __init__(self):
-        self.node =Node()
-        self.children = list()
+        self.node = Node()
+        self.idx = 0
 
-    def search(self,items):
-        self.mcts(self.node,items)
-        idx = numpy.argmax(self.node.T)
-        move = node.moves[idx]
+    def search(self, items, rollout=True):
+
+        self.node.expand(items)
+
+        if rollout:
+            move = random.choice(items)
+            self.idx = move
+        else:
+            self.idx = self.node.choose()
+            move = items[self.idx]
         return move
 
-    def mcts(self, node,items):
-        if node.leaf:
-            node.expand(items)
-            rollout = True
-        else:
-            rollout = False
+    def update(self, reward):
+        self.node.update(self.idx, reward)
 
-        if node.terminal:
-            return 0
+    def backup(self):
+        self.node.tensor = np.load("./mcts.npy")
 
-        idx = node.choose()
-        move = node.moves[idx]
-        if self.game.make_move(move):
-            val = 1
-        elif rollout:
-            val = -self.rollout(items)
-        else:
-            val = -self.mcts(node.children[idx],items)
-
-        node.update(idx, val)
-        return val
-
-    def rollout(self,items):
-        moves = items
-        if len(moves) == 0:  # game is drawn
-            return 0
-        move = random.choice(moves)
-        if self.game.make_move(move):  # current player won
-            val = 1
-        else:
-            val = -self.rollout(items)
-        self.game.unmake_move()
-        return val
-
+    def save(self):
+        np.save("./mcts.npy",self.node.tensor)
 
 
 class MCTS:
     def __init__(self):
         self.Node = MCTS_Node()
 
-    def input(self, items):
-        self.Node.search(items)
-        return 0
+    def call_saves(self):
+        self.Node.backup()
+
+    def input(self, items, rollout=True):
+        return self.Node.search(items, rollout)
 
     def append_reward(self, reward):
-#        self.Node.
-        return 0
+        self.Node.update(reward)
+        self.Node.save()
+
+    def backup(self):
+        self.Node.backup()

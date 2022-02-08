@@ -345,7 +345,7 @@ def capture_screen():
     return img_frame
 
 
-def item_selection():
+def item_selection(mcts):
     src = pyautogui.screenshot()
     src = np.array(src)
     src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
@@ -366,10 +366,21 @@ def item_selection():
         return 1
 
     elif min_val1 < 1468192:
-
-        pyautogui.moveTo(930, 540)
-        pyautogui.click()
-        return 2
+        res = selection()
+        result = mcts.input(res)
+        if result == 0:
+            pyautogui.moveTo(950, 880)
+            pyautogui.click()
+        elif result == 1:
+            pyautogui.moveTo(950, 880)
+            pyautogui.click()
+        elif result == 2:
+            pyautogui.moveTo(950, 880)
+            pyautogui.click()
+        else:
+            pyautogui.moveTo(950, 880)
+            pyautogui.click()
+        return
     return 0
 
 

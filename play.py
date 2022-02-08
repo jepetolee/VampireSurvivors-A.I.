@@ -15,7 +15,7 @@ def run():
     model = module.A2C()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     device= torch.device('cuda')
-#    model.load_state_dict(torch.load('./save.pt'))
+    model.load_state_dict(torch.load('./save.pt'))
     r_latest = 0
     while count > 0:
 

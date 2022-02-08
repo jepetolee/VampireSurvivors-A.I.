@@ -5,16 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a372e74-4257-4f6e-8edb-2485b218852e" name="변경" comment="toy progject in korean new years day">
+      <change afterPath="$PROJECT_DIR$/Monte_Carlo_tree/mcts.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/capture.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Capture/capturescreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/capturescreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/new.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/output.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Capture/test1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Monte_Carlo_tree/MCTS.py" beforeDir="false" afterPath="$PROJECT_DIR$/Monte_Carlo_tree/MCTS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Monte_Carlo_tree/MCTS.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/RL/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RL/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play.py" beforeDir="false" afterPath="$PROJECT_DIR$/play.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/save.pt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +74,7 @@
       <recent name="C:\Users\timet\PycharmProjects\VampireSurvivorsRL\Capture" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.play">
+  <component name="RunManager" selected="Python.agent">
     <configuration name="MCTS" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="VampireSurvivorsRL" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -206,11 +203,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.agent" />
+        <item itemvalue="Python.MCTS" />
         <item itemvalue="Python.play" />
         <item itemvalue="Python.capturescreen" />
         <item itemvalue="Python.scratch_1" />
-        <item itemvalue="Python.MCTS" />
-        <item itemvalue="Python.agent" />
       </list>
     </recent_temporary>
   </component>
