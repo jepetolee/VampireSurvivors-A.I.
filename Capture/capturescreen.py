@@ -5,19 +5,13 @@ import numpy as np
 import pyautogui
 import multiprocessing as mp
 
-import pydirectinput
+#import pydirectinput
 
-
-def finding_character():
-    return 930, 460, 90, 100
-
-
-def finding_boxes(src, value):
+def finding_boxes(src):
     temp = cv.imread("./data/box.png")
     temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
-    results = []
     h, w = temp.shape
-
+    image = np.zeros((1080, 1724), dtype=np.float32)
     result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
     while True:
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
@@ -30,41 +24,13 @@ def finding_boxes(src, value):
                     except IndexError:  # ignore out of bounds
                         pass
 
-            res = (min_loc[0], min_loc[1], h, w)
-            results.append(res)
+            cv.rectangle (image,(min_loc[0], min_loc[1],min_loc[0]+ h,min_loc[1]+ w),150,-1)
         else:
             break
-    value.put(results)
-    return
 
+    return image
 
-def finding_signs(src, value):  # capturing the treasure box's sign
-
-    temp = cv.imread("./data/sign.png")
-    temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
-    results = []
-    h, w = temp.shape
-    result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-    while True:
-        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-        if min_val < 200000:
-            sx, sy = min_loc
-            for x in range(sx, sx + w):
-                for y in range(sy, sy + h):
-                    try:
-                        result[y][x] = 999999  # -MAX
-                    except IndexError:  # ignore out of bounds
-                        pass
-
-            res = (min_loc[0], min_loc[1], h, w)
-            results.append(res)
-        else:
-            break
-    value.put(results)
-    return
-
-
-def finding_gems(src, value):
+def finding_gems(src):
     temp1 = cv.imread("./data/gem/crystal.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
     h1, w1 = temp1.shape
@@ -80,11 +46,10 @@ def finding_gems(src, value):
 
     temp_all = [temp1, temp2, temp3]
     thresholds = [100000, 210000, 100000]
-    result_bundle = []
+    image = np.zeros((1080, 1724), dtype=np.float32)
     adder = 0
     for temp, h, w in temp_all:
         result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-        results = []
         while True:
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if min_val < thresholds[adder]:
@@ -93,19 +58,14 @@ def finding_gems(src, value):
                     for y in range(sy - 10, sy + h + 10):
                         try:
                             result[y][x] = 999999  # -MAX
-                            src[y][x] = 9999999
                         except IndexError:  # ignore out of bounds
                             pass
 
-                res = (min_loc[0], min_loc[1], h, w)
-                results.append(res)
+                cv.rectangle(image,(min_loc[0], min_loc[1], h, w),90,-1)
             else:
                 break
         adder = adder + 1
-        result_bundle.append(results)
-
-    value.put(result_bundle)
-    return
+    return image
 
 
 def finding_entities(src):
@@ -283,36 +243,33 @@ def finding_entities(src):
                  470000, 200000, 4000000, 6000000, 3000000,
                  5500000, 4700000, 3500000, 2300000, 1200000,
                  320000, 300000, 550000, 200000]
-    result_bundle = []
+    image = np.zeros((1080, 1724), dtype=np.float32)
     cnt = 0
     for temp, h, w in temp_all:
+        cv.dnn.NMSBoxes()
         result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-        results = []
         while True:
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if min_val < threshold[cnt]:
-
                 sx, sy = min_loc
+                '''
                 for x in range(sx, sx + w):
                     for y in range(sy, sy + h):
                         try:
-                            result[y][x] = 9999999
-                            src[y][x] = 9999999  # -MAX
+                            result[y][x] = 9999999# -MAX
                         except IndexError:  # ignore out of bounds
                             pass
-
-                res = (min_loc[0], min_loc[1], h, w)
-                results.append(res)
+                            '''
+                cv.rectangle(image,(min_loc[0], min_loc[1], min_loc[0]+h, min_loc[1]+w),60,-1)
             else:
                 break
-            result_bundle.append(results)
         cnt = cnt + 1
 
-    return result_bundle
+    return image
     # tcl
 
 
-def finding_boss_entities(src, value):
+def finding_boss_entities(src):
     temp1 = cv.imread("./data/boss_entity/boss_bat_l.png")
     temp1 = cv.cvtColor(temp1, cv.COLOR_RGB2GRAY)
     h1, w1 = temp1.shape
@@ -345,14 +302,13 @@ def finding_boss_entities(src, value):
     temp8 = cv.cvtColor(temp8, cv.COLOR_RGB2GRAY)
     h8, w8 = temp8.shape
     temp8 = (temp8, h8, w8)
-
+    image = np.zeros((1080, 1724), dtype=np.float32)
     temp_all = [temp1, temp2, temp3, temp4, temp7, temp8, temp5, temp6]
     thresholds = [2500000, 1300000, 900000, 930000, 120025, 100000, 2000000, 2000000]
-    result_bundle = []
     adder = 0
+
     for temp, h, w in temp_all:
         result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-        results = []
         while True:
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if min_val < thresholds[adder]:
@@ -362,108 +318,36 @@ def finding_boss_entities(src, value):
                     for y in range(sy - 10, sy + h + 10):
                         try:
                             result[y][x] = 99999999  # -MAX
-                            src[y][x] = 999999999
                         except IndexError:  # ignore out of bounds
                             pass
-
-                res = (min_loc[0], min_loc[1], h, w)
-                results.append(res)
+                cv.rectangle(image,(min_loc[0], min_loc[1],min_loc[0]+h, min_loc[1]+w),30,-1)
             else:
                 break
         adder = adder + 1
-        result_bundle.append(results)
 
-    value.put(result_bundle)
-    return
+    return image
 
-
-'''def finding_drops(src, value):
-    temp2 = cv.imread("./data/boss_entity/boss.png")
-    temp2 = cv.cvtColor(temp2, cv.COLOR_RGB2GRAY)
-    h2, w2 = temp2.shape
-    temp2 = (temp2, h2, w2)
-
-    temp_all = [temp2]
-
-    result_bundle = []
-    for temp, h, w in temp_all:
-        result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-        results = []
-        while True:
-            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-            if min_val < 200000:
-                sx, sy = min_loc
-                for x in range(sx, sx + w):
-                    for y in range(sy, sy + h):
-                        try:
-                            result[y][x] = 999999  # -MAX
-                        except IndexError:  # ignore out of bounds
-                            pass
-
-                res = (min_loc[0], min_loc[1], h, w)
-                results.append(res)
-            else:
-
-                break
-        result_bundle.append(results)
-
-    value.put(result_bundle)'''
-
-''' entity = finding_entities(img_frame)
-   boss_entity = mp.Queue()
-   boxes = mp.Queue()
-   signs = mp.Queue()
-   gems = mp.Queue()
-
-   b = mp.Process(target=finding_boss_entities, args=[img_frame, boss_entity])
-   c = mp.Process(target=finding_boxes, args=[img_frame, boxes])
-   d = mp.Process(target=finding_signs, args=[img_frame, signs])
-   e = mp.Process(target=finding_gems, args=[img_frame, gems])
-
-   b.start()
-   c.start()
-   d.start()
-   e.start()
-
-   b.join(timeout=3)
-   c.join(timeout=3)
-   d.join(timeout=3)
-   e.join(timeout=3)
-
-   b.kill()
-   c.kill()
-   d.kill()
-   e.kill()
-   # print(b.is_alive(),c.is_alive(),d.is_alive(),e.is_alive())
-   # show_changed env to model
-   image = np.zeros((1080, 1724), dtype=np.float32)
-   adder = 0
-   i = 0
-   for results in [entity, boss_entity.get(), gems.get()]:
-
-       for result in results:
-           for (x, y, h, w) in result:
-               cv.rectangle(image, (x - 100, y), (x - 100 + w, y + h), adder, -1)
-       i += 1
-       adder += 20
-   for results in [boxes.get(), signs.get()]:
-
-       for (x, y, h, w) in results:
-           cv.rectangle(image, (x - 100, y), (x - 100 + w, y + h), adder, -1)
-       i += 1
-       adder += 30
-'''
-
-
-# need to get multiprocessing&monitor capture to build data
 def capture_screen():
+    ts =time.time()
+
     src = pyautogui.screenshot(region=(100, 0, 1724, 1080))
     img_frame = np.array(src)
     img_frame = cv.cvtColor(img_frame, cv.COLOR_RGB2GRAY)
-    character = finding_character()
-    cv.rectangle(img_frame, (character[0] - 100, character[1]),
-                 (character[0] - 100 + character[2], character[1] + character[3]), 255, -1)
-    return img_frame
+    cv.rectangle(img_frame, (830, 460),(920, 560), 255, -1)
+
+    entity = finding_entities(img_frame)
+    boss_entity = finding_boss_entities(img_frame)
+    boxes = finding_boxes(img_frame)
+    gems = finding_gems(img_frame)
+    '''
+    funcs = [finding_entities,finding_gems,finding_boxes,finding_boss_entities]
+    process = [mp.Process(target=funcs[i],args=(img_frame,))for i in range(len(funcs))]
+    for proces in process:
+        proces.start()'''
+    tl = time.time()
+    print(tl-ts)
+    image = (img_frame)
+    return image
 
 
 def item_selection():
@@ -551,4 +435,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print(item_selection())
+    capture_screen()
