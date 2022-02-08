@@ -52,7 +52,8 @@ class MCTS_Node:
         self.node.tensor = np.load("Monte_Carlo_tree/mcts.npy")
 
     def save(self):
-        np.save("./mcts.npy", self.node.tensor)
+        print("works")
+        np.save("Monte_Carlo_tree/mcts", self.node.tensor)
 
 
 class MCTS:
@@ -70,7 +71,8 @@ class MCTS:
 
     def append_reward(self, reward):
         self.Node.update(reward)
-        self.Node.save()
+
+
 
     def checkwork(self):
         if self.Node.sequence != 0:
@@ -80,3 +82,6 @@ class MCTS:
 
     def backup(self):
         self.Node.backup()
+
+    def save(self):
+        self.Node.save()
