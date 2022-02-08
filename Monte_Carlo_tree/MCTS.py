@@ -52,7 +52,6 @@ class MCTS_Node:
         self.node.tensor = np.load("Monte_Carlo_tree/mcts.npy")
 
     def save(self):
-        print("works")
         np.save("Monte_Carlo_tree/mcts", self.node.tensor)
 
 
