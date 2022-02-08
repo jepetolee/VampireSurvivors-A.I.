@@ -6,7 +6,7 @@ import random
 
 class Node:
     def __init__(self):
-        self.tensor = np.zeros((100, 20), np.int32)
+        self.tensor = np.zeros((100, 30), np.int32)
         self.sequence = 0
 
     def expand(self, items):
@@ -31,6 +31,7 @@ class MCTS_Node:
     def __init__(self):
         self.node = Node()
         self.idx = 0
+        self.sequence = self.node.sequence
 
     def search(self, items, rollout=True):
 
@@ -48,10 +49,10 @@ class MCTS_Node:
         self.node.update(self.idx, reward)
 
     def backup(self):
-        self.node.tensor = np.load("./mcts.npy")
+        self.node.tensor = np.load("Monte_Carlo_tree/mcts.npy")
 
     def save(self):
-        np.save("./mcts.npy",self.node.tensor)
+        np.save("./mcts.npy", self.node.tensor)
 
 
 class MCTS:
@@ -62,11 +63,20 @@ class MCTS:
         self.Node.backup()
 
     def input(self, items, rollout=True):
-        return self.Node.search(items, rollout)
+        select = self.Node.search(items, rollout)
+        for i in range(items):
+            if select == items[i]:
+                return i
 
     def append_reward(self, reward):
         self.Node.update(reward)
         self.Node.save()
+
+    def checkwork(self):
+        if self.Node.sequence != 0:
+            return True
+        else:
+            False
 
     def backup(self):
         self.Node.backup()
