@@ -468,7 +468,9 @@ def selection():
     for temp in temp_all:
         result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+       
         if min_val < thresholds[adder]:
+
             case.append(adder)
         adder += 1
     return case

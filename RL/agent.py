@@ -80,7 +80,7 @@ def run_once(model,r_latest):
     tl = time.time()
     reward = (tl - ts) - r_latest
     for i in range(10):
-        t=len(r_list) - i
+        t=len(r_list) - i-1
         r_list[t] = reward / 60
     if mcts_worker.checkwork():
         mcts_worker.append_reward(int(reward/60))

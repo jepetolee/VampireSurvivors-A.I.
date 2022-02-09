@@ -64,7 +64,8 @@ class MCTS:
 
     def input(self, items, rollout=True):
         select = self.Node.search(items, rollout)
-        for i in range(items):
+        for i in range(len(items)):
+
             if select == items[i]:
                 return i
 
