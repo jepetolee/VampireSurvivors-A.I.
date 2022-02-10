@@ -39,6 +39,7 @@ def run_once(model,r_latest):
     ts = time.time()
     mcts_worker = mcts.MCTS()
     mcts_worker.backup()
+    reward =0
     s_list, a_list, r_list = list(), list(), list()
     while 1:
         game_over = Capture.game_over()
@@ -64,6 +65,7 @@ def run_once(model,r_latest):
         prob = model.pi(x=setting, softmax_dim=0)
         prob = torch.nan_to_num(prob,0.2)
         prob = Categorical(prob).sample().numpy()
+
         a_list.append(prob)
 
         if prob == 0:
@@ -75,15 +77,17 @@ def run_once(model,r_latest):
             pydirectinput.press("left")
         elif prob == 3:
             pydirectinput.press("right")
+        tl = time.time()
+        reward = (tl - ts) - r_latest
+        r_list.append(reward / 60)
 
-        r_list.append(0)
-    tl = time.time()
+    '''
     reward = (tl - ts) - r_latest
     for i in range(10):
         t=len(r_list) - i-1
-        r_list[t] = reward / 60
+        r_list[t] = '''
     if mcts_worker.checkwork():
-        mcts_worker.append_reward(int(reward/60))
+        mcts_worker.append_reward(int(reward/10))
     mcts_worker.save()
     return s_list, a_list, r_list
 

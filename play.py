@@ -13,9 +13,9 @@ gamma = 0.75
 def run():
     count = 10000
     model = module.A2C()
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    optimizer = optim.Adam(model.parameters(), lr=0.1)
     device= torch.device('cuda')
-    model.load_state_dict(torch.load('./save.pt'))
+  #  model.load_state_dict(torch.load('./save.pt'))
     r_latest = 0
     while count > 0:
 

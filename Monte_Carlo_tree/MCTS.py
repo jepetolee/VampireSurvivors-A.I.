@@ -38,8 +38,14 @@ class MCTS_Node:
         self.node.expand(items)
 
         if rollout:
-            move = random.choice(items)
-            self.idx = move
+            rand = [1, 2, 3]
+            rand = random.choice(rand)
+            if rand ==1:
+                move = random.choice(items)
+                self.idx = move
+            else:
+                self.idx = self.node.choose()
+                move = items[self.idx]
         else:
             self.idx = self.node.choose()
             move = items[self.idx]

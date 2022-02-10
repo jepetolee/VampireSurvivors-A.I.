@@ -1,3 +1,4 @@
+import random
 import time
 
 import cv2 as cv
@@ -333,6 +334,7 @@ def capture_screen():
     img_frame = np.array(src)
     img_frame = cv.cvtColor(img_frame, cv.COLOR_RGB2GRAY)
     cv.rectangle(img_frame, (830, 460), (920, 560), 255, -1)
+
     # entity = finding_entities(img_frame)
     # boss_entity = finding_boss_entities(img_frame)
     # boxes = finding_boxes(img_frame)
@@ -368,6 +370,7 @@ def item_selection(mcts):
         return 1
 
     elif min_val1 < 1468192:
+
         res = selection()
         result = mcts.input(res)
         if result == 0:
@@ -468,7 +471,7 @@ def selection():
     for temp in temp_all:
         result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-       
+
         if min_val < thresholds[adder]:
 
             case.append(adder)
@@ -489,5 +492,6 @@ def game_over():
         return True
     else:
         return False
+
 
 

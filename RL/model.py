@@ -25,6 +25,7 @@ class A2C(nn.Module):
         x = torch.flatten(x, 1)
         x = self.p(x)
         prob = func.softmax(x, softmax_dim)
+        print(prob,softmax_dim)
         return prob
 
     def value(self, x):
