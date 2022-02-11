@@ -59,6 +59,7 @@ def run_once(model,r_latest):
         setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724)
 
         prob = model.pi(x=setting, softmax_dim=1)
+    
         prob = Categorical(prob).sample().numpy()
 
         a_list.append(prob)
