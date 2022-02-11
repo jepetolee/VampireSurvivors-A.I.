@@ -30,7 +30,6 @@ def run_once(model,r_latest):
     pyautogui.moveTo(1250, 1000)
     pyautogui.click()
 
-
     ts = time.time()
     mcts_worker = mcts.MCTS()
     mcts_worker.backup()
@@ -63,6 +62,7 @@ def run_once(model,r_latest):
         prob = Categorical(prob).sample().numpy()
 
         a_list.append(prob)
+
         if prob == 0:
             pydirectinput.press("up")
         elif prob == 1:
@@ -75,9 +75,7 @@ def run_once(model,r_latest):
 
         tl = time.time()
         reward = (tl - ts) - r_latest
-        n = random.choice([1,2])
-        r_list.append(n)
-        break
+        r_list.append(reward/10)
     if mcts_worker.checkwork():
         mcts_worker.append_reward(int(reward/10))
     mcts_worker.save()
