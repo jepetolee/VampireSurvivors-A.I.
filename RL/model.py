@@ -24,8 +24,7 @@ class A2C(nn.Module):
         x = func.relu(self.max_pool3(self.conv3(x)))
         x = torch.flatten(x, 1)
         x = self.p(x)
-        prob = func.softmax(x, softmax_dim)
-        print(prob,softmax_dim)
+        prob = func.softmax(x, dim=softmax_dim)
         return prob
 
     def value(self, x):
@@ -34,5 +33,5 @@ class A2C(nn.Module):
         x = func.relu(self.max_pool3(self.conv3(x)))
         x = torch.flatten(x, 1)
 
-        x = func.relu(self.v(x))
+        x = self.v(x)
         return x

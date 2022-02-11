@@ -14,8 +14,7 @@ def run():
     count = 10000
     model = module.A2C()
     optimizer = optim.Adam(model.parameters(), lr=0.1)
-    device= torch.device('cuda')
-  #  model.load_state_dict(torch.load('./save.pt'))
+    model.load_state_dict(torch.load('./save.pt'))
     r_latest = 0
     while count > 0:
 
@@ -36,6 +35,7 @@ def run():
             target.append(G)
         target= np.array(target)
         target_vec = torch.from_numpy(target).float()
+
         s_list = np.array(s_list)
         s_vec = torch.tensor(s_list).float().reshape(-1, 1, 1080, 1724)
         a_list = np.array(a_list)
@@ -47,10 +47,10 @@ def run():
 
         loss = -(torch.log(pi_all) * advantage.detach().mean()) + \
                torch.nn.functional.l1_loss(model.value(s_vec).reshape(-1), target_vec.reshape(-1))
-        loss = torch.log(loss).mean()
-        loss= torch.nan_to_num(loss,0.2)
+
         optimizer.zero_grad()
         loss.backward()
+
         optimizer.step()
         count -= 1
         if count%1==0:
