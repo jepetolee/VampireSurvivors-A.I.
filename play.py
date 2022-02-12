@@ -51,7 +51,7 @@ def run():
 
         optimizer.zero_grad()
         loss.backward()
-
+        torch.nn.utils.clip_grad_norm(model.parameters(),0.5)
         optimizer.step()
         count -= 1
         if count%1==0:
