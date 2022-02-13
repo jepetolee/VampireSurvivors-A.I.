@@ -1,5 +1,4 @@
 import random
-
 import torch
 import time
 import pyautogui
@@ -10,7 +9,11 @@ import pydirectinput
 
 
 def run_once(model,r_latest):
-
+    mcts_worker = mcts.MCTS()
+    mcts_worker.backup()
+    reward = 0
+    s_list, a_list, r_list = list(), list(), list()
+    model.set_recurrent_buffers(buf_size=1)
     time.sleep(4)
     pyautogui.moveTo(980, 660)
     pyautogui.click()
@@ -31,10 +34,7 @@ def run_once(model,r_latest):
     pyautogui.click()
 
     ts = time.time()
-    mcts_worker = mcts.MCTS()
-    mcts_worker.backup()
-    reward =0
-    s_list, a_list, r_list = list(), list(), list()
+
     while 1:
         game_over = Capture.game_over()
 

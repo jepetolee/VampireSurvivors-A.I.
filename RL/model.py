@@ -17,20 +17,13 @@ class FeatureEncoder(nn.Module):
         self.max_pool3 = nn.MaxPool2d(kernel_size=2)
         self.in_size = 3640
         self.h1 = 288
-        if self.is_lstm:
-            self.lstm = nn.LSTMCell(input_size=self.in_size, hidden_size=self.h1)
 
-    def reset_lstm(self, buf_size=None, reset_indices=None):
+        self.lstm = nn.LSTMCell(input_size=self.in_size, hidden_size=self.h1)
+
+    def reset_lstm(self, buf_size=None):
 
         with torch.no_grad():
-            if reset_indices is None:
-                self.h_t1 = self.c_t1 = torch.zeros(buf_size, self.h1, device=self.lstm.weight_ih.device)
-            else:
-                resetTensor = torch.as_tensor(reset_indices.astype(np.uint8), device=self.lstm.weight_ih.device)
-
-                if resetTensor.sum():
-                    self.h_t1 = (1 - resetTensor.view(-1, 1)).float() * self.h_t1
-                    self.c_t1 = (1 - resetTensor.view(-1, 1)).float() * self.c_t1
+            self.h_t1 = self.c_t1 = torch.zeros(buf_size, self.h1, device=self.lstm.weight_ih.device)
 
     def forward(self, x):
         x = func.relu(self.max_pool1(self.conv1(x)))
@@ -56,10 +49,9 @@ class A2C(nn.Module):
         return prob
 
     def set_recurrent_buffers(self, buf_size):
-        self.feat_enc_net.reset_lstm(buf_size=buf_size)
+        self.encoder.reset_lstm(buf_size=buf_size)
 
-    def reset_recurrent_buffers(self, reset_indices):
-        self.feat_enc_net.reset_lstm(reset_indices=reset_indices)
+
     def value(self, x):
         x=self.encoder(x)
         x = self.v(x)

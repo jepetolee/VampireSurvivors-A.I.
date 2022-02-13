@@ -8,6 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/VampireSurvivorsRL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/VampireSurvivorsRL.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RL/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RL/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play.py" beforeDir="false" afterPath="$PROJECT_DIR$/play.py" afterDir="false" />
     </list>
@@ -72,7 +73,7 @@
       <recent name="C:\Users\timet\PycharmProjects\VampireSurvivorsRL\Capture" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.model">
+  <component name="RunManager" selected="Python.play">
     <configuration name="MCTS" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="VampireSurvivorsRL" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -222,12 +223,12 @@
     </configuration>
     <list>
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.model" />
       <item itemvalue="Python.MCTS" />
       <item itemvalue="Python.agent" />
       <item itemvalue="Python.capturescreen" />
       <item itemvalue="Python.play" />
       <item itemvalue="Python.scratch_1" />
-      <item itemvalue="Python.model" />
     </list>
     <recent_temporary>
       <list>

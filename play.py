@@ -14,11 +14,12 @@ def run():
     count = 10000
     model = module.A2C()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
-    model.load_state_dict(torch.load('./save.pt'))
+#    model.load_state_dict(torch.load('./save.pt'))
     r_latest = 0
     while count > 0:
 
         s_list, a_list, r_list = agent.run_once(model,r_latest)
+
         if r_latest < r_list[-1]:
             r_latest = r_list[-1]
         s_latest = torch.tensor(s_list[-1]).float().reshape(-1, 1, 1080, 1724)
@@ -35,7 +36,7 @@ def run():
             target.append(G)
         target= np.array(target)
         target_vec = torch.from_numpy(target).float()
-
+        model.set_recurrent_buffers(buf_size=len(r_list))
         s_list = np.array(s_list)
         s_vec = torch.tensor(s_list).float().reshape(-1, 1, 1080, 1724)
         a_list = np.array(a_list)
@@ -51,7 +52,7 @@ def run():
 
         optimizer.zero_grad()
         loss.backward()
-        torch.nn.utils.clip_grad_norm(model.parameters(),0.5)
+        torch.nn.utils.clip_grad_norm_(model.parameters(),0.5)
         optimizer.step()
         count -= 1
         if count%1==0:
