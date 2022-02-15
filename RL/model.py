@@ -35,7 +35,10 @@ class FeatureEncoder(nn.Module):
         x = func.relu(self.max_pool3(self.conv3(x)))
         x = x.view(-1, 3640)
         self.h_t1, self.c_t1 = self.lstm(x, (self.h_t1, self.c_t1))
+
         del x
+        gc.collect()
+        torch.cuda.empty_cache()
         return self.h_t1
 
 
@@ -43,14 +46,17 @@ class A2C(nn.Module):
     def __init__(self):
         super(A2C, self).__init__()
         self.encoder = FeatureEncoder()
-        self.p = nn.Linear(self.encoder.in_size, 5)
-        self.v = nn.Linear(self.encoder.in_size, 1)
+        self.p = nn.Linear(self.encoder.h1, 5)
+        self.v = nn.Linear(self.encoder.h1, 1)
 
     def pi(self, x, softmax_dim=1):
 
         x= self.encoder(x)
         x = self.p(x)
         prob = func.softmax(x, dim=softmax_dim)
+        del x
+        gc.collect()
+        torch.cuda.empty_cache()
         return prob
 
     def set_recurrent_buffers(self, buf_size):
