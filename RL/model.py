@@ -5,7 +5,7 @@ import torch.optim as optim
 from torch.distributions import Categorical
 import numpy as np
 
-
+import gc
 class FeatureEncoder(nn.Module):
     def __init__(self):
         super().__init__()
@@ -24,13 +24,18 @@ class FeatureEncoder(nn.Module):
 
         with torch.no_grad():
             self.h_t1 = self.c_t1 = torch.zeros(buf_size, self.h1, device=self.lstm.weight_ih.device)
-
+    def del_lstm(self):
+        del self.c_t1
+        del self.h_t1
+        torch.cuda.empty_cache()
+        gc.collect()
     def forward(self, x):
         x = func.relu(self.max_pool1(self.conv1(x)))
         x = func.relu(self.max_pool2(self.conv2(x)))
         x = func.relu(self.max_pool3(self.conv3(x)))
         x = x.view(-1, 3640)
         self.h_t1, self.c_t1 = self.lstm(x, (self.h_t1, self.c_t1))
+        del x
         return self.h_t1
 
 
@@ -38,8 +43,8 @@ class A2C(nn.Module):
     def __init__(self):
         super(A2C, self).__init__()
         self.encoder = FeatureEncoder()
-        self.p = nn.Linear(self.encoder.h1, 5)
-        self.v = nn.Linear(self.encoder.h1, 1)
+        self.p = nn.Linear(self.encoder.in_size, 5)
+        self.v = nn.Linear(self.encoder.in_size, 1)
 
     def pi(self, x, softmax_dim=1):
 
@@ -50,7 +55,8 @@ class A2C(nn.Module):
 
     def set_recurrent_buffers(self, buf_size):
         self.encoder.reset_lstm(buf_size=buf_size)
-
+    def del_dat(self):
+        self.encoder.del_lstm()
 
     def value(self, x):
         x=self.encoder(x)

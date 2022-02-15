@@ -6,10 +6,12 @@ from torch.distributions import Categorical
 import Capture
 import Monte_Carlo_tree as mcts
 import pydirectinput
-
+import gc
 
 def run_once(model,r_latest):
+
     mcts_worker = mcts.MCTS()
+    device = torch.device('cuda')
     mcts_worker.backup()
     reward = 0
     s_list, a_list, r_list = list(), list(), list()
@@ -34,8 +36,16 @@ def run_once(model,r_latest):
     pyautogui.click()
 
     ts = time.time()
-
+    probal =1
     while 1:
+        if probal == 0:
+            pydirectinput.keyUp("up")
+        elif probal == 1:
+            pydirectinput.keyUp("down")
+        elif probal == 2:
+            pydirectinput.keyUp("left")
+        elif probal == 3:
+            pydirectinput.keyUp("right")
         game_over = Capture.game_over()
 
         if game_over is True:
@@ -56,28 +66,30 @@ def run_once(model,r_latest):
         setting = Capture.capture_screen()
         s_list.append(setting)
 
-        setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724)
+        setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724).to(device)
 
         prob = model.pi(x=setting, softmax_dim=1)
-    
-        prob = Categorical(prob).sample().numpy()
+        del setting
+        prob = Categorical(prob).sample().to('cpu').numpy()
 
         a_list.append(prob)
 
+
+        probal =prob
+
         if prob == 0:
-            pydirectinput.press("up")
+            pydirectinput.keyDown("up")
         elif prob == 1:
-            pydirectinput.press("down")
-
+            pydirectinput.keyDown("down")
         elif prob == 2:
-            pydirectinput.press("left")
+            pydirectinput.keyDown("left")
         elif prob == 3:
-            pydirectinput.press("right")
-
-        tl = time.time()
-        reward = (tl - ts) - r_latest
-        r_list.append(reward/10)
+            pydirectinput.keyDown("right")
+        r_list.append(1)
+    tl = time.time()
+    reward = tl - ts - r_latest
     if mcts_worker.checkwork():
         mcts_worker.append_reward(int(reward/10))
+    gc.collect()
     mcts_worker.save()
     return s_list, a_list, r_list
