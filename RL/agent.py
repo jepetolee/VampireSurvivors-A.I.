@@ -5,19 +5,20 @@ import pyautogui
 from torch.distributions import Categorical
 import Capture
 import Monte_Carlo_tree as mcts
-import pydirectinput
+#import pydirectinput
 import gc
 
 
 def run_once(model, r_latest):
-    pydirectinput.FAILSAFE = False
+#    pydirectinput.FAILSAFE = False
     mcts_worker = mcts.MCTS()
     device = torch.device('cuda')
     mcts_worker.backup()
     reward = 0
-    s_list, a_list, r_list = list(), list(), list()
+    s_list, a_list, r_list,p_list = list(), list(), list(),list()
     model.set_recurrent_buffers(buf_size=1)
-    time.sleep(4)
+    """
+    time.sleep(2)
     pyautogui.moveTo(980, 660)
     pyautogui.click()
     time.sleep(0.5)
@@ -35,7 +36,7 @@ def run_once(model, r_latest):
     time.sleep(0.5)
     pyautogui.moveTo(1250, 1000)
     pyautogui.click()
-
+    """
     ts = time.time()
     probal = 1
     with torch.no_grad():
@@ -55,21 +56,25 @@ def run_once(model, r_latest):
                 time.sleep(0.5)
                 pyautogui.click()
                 break
+            elif reward >10:
+                break
 
             Capture.item_selection(mcts_worker)
 
             setting = Capture.capture_screen()
             s_list.append(setting)
 
-            setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724).to(device)
+            setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724)#.to(device)
 
             prob = model.pi(x=setting, softmax_dim=1)
+            prob = prob.view(-1)
             del setting
             torch.cuda.empty_cache()
-            prob = Categorical(prob).sample().to('cpu').numpy()
+            a = Categorical(prob).sample().to('cpu').numpy()
 
-            a_list.append(prob)
-
+            p_list.append(prob[a].to('cpu').numpy())
+            a_list.append(a)
+            """
             if probal == 0:
                 pydirectinput.keyUp("up")
             elif probal == 1:
@@ -78,23 +83,25 @@ def run_once(model, r_latest):
                 pydirectinput.keyUp("left")
             elif probal == 3:
                 pydirectinput.keyUp("right")
-
-            probal = prob
-
-            if prob == 0:
+            """
+            probal = a
+            """
+            if a == 0:
                 pydirectinput.keyDown("up")
-            elif prob == 1:
+            elif a == 1:
                 pydirectinput.keyDown("down")
-            elif prob == 2:
+            elif a == 2:
                 pydirectinput.keyDown("left")
-            elif prob == 3:
+            elif a == 3:
                 pydirectinput.keyDown("right")
+            """
             tl = time.time()
             reward = tl - ts - r_latest
+
             r_list.append(reward)
 
     if mcts_worker.checkwork():
         mcts_worker.append_reward(int(reward / 10))
     gc.collect()
     mcts_worker.save()
-    return s_list, a_list, r_list
+    return s_list, a_list, r_list,p_list

@@ -5,7 +5,7 @@ import cv2 as cv
 import numpy as np
 import pyautogui
 import multiprocessing as mp
-import pydirectinput
+#import pydirectinput
 
 '''
 def finding_boxes(src):
