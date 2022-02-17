@@ -8,7 +8,8 @@ import Monte_Carlo_tree as mcts
 import pydirectinput
 import gc
 
-def run_once(model,r_latest):
+
+def run_once(model, r_latest):
     pydirectinput.FAILSAFE = False
     mcts_worker = mcts.MCTS()
     device = torch.device('cuda')
@@ -36,17 +37,10 @@ def run_once(model,r_latest):
     pyautogui.click()
 
     ts = time.time()
-    probal =1
+    probal = 1
     with torch.no_grad():
         while 1:
-            if probal == 0:
-                pydirectinput.keyUp("up")
-            elif probal == 1:
-                pydirectinput.keyUp("down")
-            elif probal == 2:
-                pydirectinput.keyUp("left")
-            elif probal == 3:
-                pydirectinput.keyUp("right")
+
             game_over = Capture.game_over()
 
             if game_over is True:
@@ -76,6 +70,15 @@ def run_once(model,r_latest):
 
             a_list.append(prob)
 
+            if probal == 0:
+                pydirectinput.keyUp("up")
+            elif probal == 1:
+                pydirectinput.keyUp("down")
+            elif probal == 2:
+                pydirectinput.keyUp("left")
+            elif probal == 3:
+                pydirectinput.keyUp("right")
+
             probal = prob
 
             if prob == 0:
@@ -91,7 +94,7 @@ def run_once(model,r_latest):
             r_list.append(reward)
 
     if mcts_worker.checkwork():
-        mcts_worker.append_reward(int(reward/10))
+        mcts_worker.append_reward(int(reward / 10))
     gc.collect()
     mcts_worker.save()
     return s_list, a_list, r_list
