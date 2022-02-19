@@ -15,35 +15,30 @@ def run():
     model = module.A2C()
     device = torch.device('cuda')
     optimizer = optim.Adam(model.parameters(), lr=0.01)
-
-    model.load_state_dict(torch.load('./save.pt'))
-
     r_latest =60
+    model.load_state_dict(torch.load('./save.pt'))
 
     while count > 0:
         model.to(device)
-        s_list, a_list, r_list,policy_list = agent.run_once(model, r_latest)
+        s_list, a_list, r_list, policy_list = agent.run_once(model,r_latest)
         s_len = len(s_list)
         # protection of memory-error
-        if s_len > 30:
-            s_list1 = s_list[s_len - 31:-2]
-            s_prime_list = s_list[s_len - 30:-1]
-            r_list = r_list[s_len - 31:-2]
-            a_list = a_list[s_len - 31:-2]
-            policy_list = policy_list[s_len - 30:-1]
-            s_list= s_list1
+        if s_len > 50:
+            s_list1 = s_list[s_len - 51:-2]
+            s_prime_list = s_list[s_len - 50:-1]
+            r_list = r_list[s_len - 51:-2]
+            a_list = a_list[s_len - 51:-2]
+            policy_list = policy_list[s_len - 50:-1]
+            s_list = s_list1
             del s_list1
-
         else:
             s_list1 = s_list[s_len - 11:-2]
             s_prime_list = s_list[s_len - 10:-1]
             r_list = r_list[s_len - 11:-2]
             a_list = a_list[s_len - 11:-2]
             policy_list = policy_list[s_len - 10:-1]
-            s_list =s_list1
+            s_list = s_list1
             del s_list1
-
-
         if r_latest < r_list[-1] * 10:
             r_latest = r_list[-1] * 10
         model.to('cpu')
@@ -82,7 +77,7 @@ def run():
             a_vec = torch.tensor(a_list, dtype=torch.float).reshape(-1).unsqueeze(-1).to('cpu')
             pi_val = model.pi(s_vec, softmax_dim=1).to('cpu')
             del s_vec
-            pi_all = pi_val.squeeze(1).gather(1,a_vec.type(torch.int64))
+            pi_all = pi_val.squeeze(1).gather(1, a_vec.type(torch.int64))
 
             del pi_val
 
@@ -91,9 +86,9 @@ def run():
             del prior_policy
             del a_vec
             surrogated_loss1 = ratio * advantage_vec
-            surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1)
-            loss = - torch.min(surrogated_loss1, surrogated_loss2) + torch.nn.functional.smooth_l1_loss(value_s_vec,target_vec.detach())
-            #torch.nan_to_num(loss,0)
+            surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1)*advantage_vec
+            loss = - torch.min(surrogated_loss1, surrogated_loss2).mean()\
+                   + torch.nn.functional.smooth_l1_loss(value_s_vec,target_vec.detach()).mean()
             del surrogated_loss1
             del surrogated_loss2
             del target_vec
@@ -101,7 +96,7 @@ def run():
             torch.cuda.empty_cache()
             gc.collect()
             optimizer.zero_grad()
-            loss.mean().backward(retain_graph=True)
+            loss.backward(retain_graph=True)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
             optimizer.step()
 
