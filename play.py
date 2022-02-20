@@ -23,12 +23,12 @@ def run():
         s_list, a_list, r_list, policy_list = agent.run_once(model,r_latest)
         s_len = len(s_list)
         # protection of memory-error
-        if s_len > 50:
-            s_list1 = s_list[s_len - 51:-2]
-            s_prime_list = s_list[s_len - 50:-1]
-            r_list = r_list[s_len - 51:-2]
-            a_list = a_list[s_len - 51:-2]
-            policy_list = policy_list[s_len - 50:-1]
+        if s_len > 30:
+            s_list1 = s_list[s_len - 31:-2]
+            s_prime_list = s_list[s_len - 30:-1]
+            r_list = r_list[s_len - 31:-2]
+            a_list = a_list[s_len - 31:-2]
+            policy_list = policy_list[s_len - 30:-1]
             s_list = s_list1
             del s_list1
         else:
