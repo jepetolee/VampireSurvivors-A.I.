@@ -83,10 +83,13 @@ def run_once(model):
             reward = 1
             if result < 0:
                 for i in range(10):
-                    r_list[-(i + 1)] += (result -3*i)
+                    r_list[-(i + 1)] += (result - 3 * i)
                 reward = 0
-            else:
+            elif result > 0:
+                for i in range(10):
+                    r_list[-(i + 1)] += (result - i)
                 reward += result
+            else:
                 reward_sum += reward
             r_list.append(reward)
 

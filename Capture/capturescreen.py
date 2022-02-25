@@ -65,22 +65,22 @@ def item_selection(mcts):
         time.sleep(20)
         pyautogui.moveTo(950, 880)
         pyautogui.click()
-        return src, 100
+        return src, 30
 
     if min_val1 < 1468192:
         res = selection()
         result = mcts.input(res)
-        if result == 0:
-            pyautogui.moveTo(970, 310)
+        if result == 3:
+            pyautogui.moveTo(970, 840)
             pyautogui.click()
-        elif result == 1:
-            pyautogui.moveTo(970, 480)
+        elif result == 0:
+            pyautogui.moveTo(970, 310)
             pyautogui.click()
         elif result == 2:
             pyautogui.moveTo(970, 650)
             pyautogui.click()
         else:
-            pyautogui.moveTo(970, 840)
+            pyautogui.moveTo(970, 480)
             pyautogui.click()
         return src, 10
 
