@@ -30,18 +30,18 @@ def run():
         # model.to('cpu')
         for t in range(num):
             if s_len > 30:
-                s_list1 = s_list[s_len - (t+1)*30:-1-t*30]
-                s_prime_list = s_list[s_len - 31-t*30:-2-t*30]
-                r_list1 = r_list[s_len - (t+1)*30:-1-t*30]
-                a_list1 = a_list[s_len - (t+1)*30:-1-t*30]
-                policy_list1 = policy_list[s_len - 31-t*30:-2-t*30]
+                s_list1 = s_list[s_len - (t+1)*30:-t*30]
+                s_prime_list = s_list[s_len - 1-(t+1)*30:-1-t*30]
+                r_list1 = r_list[s_len - (t+1)*30:-t*30]
+                a_list1 = a_list[s_len - (t+1)*30:-t*30]
+                policy_list1 = policy_list[s_len -1-(t+1)*30:-1-t*30]
 
             else:
-                s_list1 = s_list[1:left-1]
-                s_prime_list = s_list[:left-2]
-                r_list1 = r_list[1:left-1]
-                a_list1 = a_list[1:left-1]
-                policy_list1 = policy_list[:left-2]
+                s_list1 = s_list[1:left]
+                s_prime_list = s_list[:left-1]
+                r_list1 = r_list[1:left]
+                a_list1 = a_list[1:left]
+                policy_list1 = policy_list[:left-1]
             if len(s_list1) ==0 or len(s_prime_list) ==0:
                 break
             for i in range(3):
