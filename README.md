@@ -1,19 +1,11 @@
-# VampireSurvivorsRL
+# VampireSurvivors A.I.
 
-This is the project which plays Vampire Survivors using reinforcement algorithms.
 
-## A2C
-this project applyed a2c(advantaged actor critic) in training those games, it performed high effieciency for training Atari-100.
-#### what's actor-critic?
-http://incompleteideas.net/papers/barto-sutton-anderson-83.pdf
-https://arxiv.org/abs/1611.01224
-### reward
-I set reward for time(sec/10) in this project, because most of rogue-like genres' is deeply related to surviving time.
-### without preprocessing
-I'd tried to preprocessing settings with cv.templatematch,but it takes 2-3seconds so I stopped applying this one, maybe  apply some latest mtm algorithms to next project.
-### using convolutional network
- this project used cnn training in value and phi network, I think it needs more efficient networks
+## Algorithms in each problems.
 
-## MCTS
+### PPO
+I used PPO method in this project, Vampire Survivors can be 
+
+### MCTS
 Also this game needs to select items, this project using timebased mcts.
 
