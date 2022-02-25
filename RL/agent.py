@@ -1,4 +1,4 @@
-import random
+import time
 import torch
 import pyautogui
 from torch.distributions import Categorical
@@ -91,6 +91,7 @@ def run_once(model):
                 reward += result
             else:
                 reward_sum += reward
+                reward = 1
             r_list.append(reward)
 
     if mcts_worker.checkwork():

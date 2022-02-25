@@ -28,7 +28,7 @@ def item_selection(mcts):
 
     tempD = cv.imread("Capture/data/end.png")
     tempD = cv.cvtColor(tempD, cv.COLOR_RGB2GRAY)
-    resultD = cv.matchTemplate(srcD, temp, cv.TM_SQDIFF)
+    resultD = cv.matchTemplate(src, tempD, cv.TM_SQDIFF)
     min_valD, max_valD, min_locD, max_locD = cv.minMaxLoc(resultD)
 
     cv.rectangle(src, (830, 460), (920, 560), 255, -1)
@@ -46,7 +46,7 @@ def item_selection(mcts):
         pyautogui.click()
         return src, -10
 
-    if min_val2 < 14000000:
+    '''if min_val2 < 14000000:
         time.sleep(3)
         pyautogui.moveTo(950, 750)
         pyautogui.click()
@@ -57,7 +57,7 @@ def item_selection(mcts):
         pyautogui.click()
         time.sleep(0.5)
         pyautogui.click()
-        return src, -5
+        return src, -5'''
 
     if min_val < 15000000:
         pyautogui.moveTo(950, 880)

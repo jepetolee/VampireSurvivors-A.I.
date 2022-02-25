@@ -7,10 +7,13 @@
     <list default="true" id="20cc63c7-8ba7-4474-bd4a-7fa84a5ed25e" name="변경" comment="">
       <change afterPath="$PROJECT_DIR$/README.eng.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/Capture/capturescreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Capture/capturescreen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RL/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/RL/agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+=======
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
