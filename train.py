@@ -72,6 +72,7 @@ def run():
                 for td_error in delt[::-1]:
                     advantage = gamma * 0.97 * advantage + td_error
                     advantage_list.append([advantage])
+                advantage_list.reverse()
                 advantage_vec = torch.tensor(advantage_list, dtype=torch.float).to('cpu')
                 del advantage_list
                 advantage_vec = (advantage_vec - advantage_vec.mean()) / advantage_vec.std()
