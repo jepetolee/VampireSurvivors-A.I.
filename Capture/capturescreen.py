@@ -1,6 +1,5 @@
 import random
 import time
-
 import cv2 as cv
 import numpy as np
 import pyautogui
@@ -8,36 +7,67 @@ import multiprocessing as mp
 import pydirectinput
 
 
-def capture_screen():
-    src = pyautogui.screenshot(region=(100, 0, 1724, 1080))
-    img_frame = np.array(src)
-    img_frame = cv.cvtColor(img_frame, cv.COLOR_RGB2GRAY)
-    cv.rectangle(img_frame, (830, 460), (920, 560), 255, -1)
-    return img_frame
-
-
 def item_selection(mcts):
-    src = pyautogui.screenshot()
+    src = pyautogui.screenshot(region=(100, 0, 1724, 1080))
     src = np.array(src)
     src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
     dropbox = cv.imread("Capture/data/dropbox.png")
     dropbox = cv.cvtColor(dropbox, cv.COLOR_RGB2GRAY)
     result = cv.matchTemplate(src, dropbox, cv.TM_SQDIFF)
     min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+
     select = cv.imread("Capture/data/selection.png")
     select = cv.cvtColor(select, cv.COLOR_RGB2GRAY)
     result2 = cv.matchTemplate(src, select, cv.TM_SQDIFF)
-    min_val1, max_val2, min_loc1, max_loc2 = cv.minMaxLoc(result2)
+    min_val1, max_val1, min_loc1, max_loc1 = cv.minMaxLoc(result2)
+
+    revival = cv.imread("Capture/data/revival.png")
+    revival = cv.cvtColor(revival, cv.COLOR_RGB2GRAY)
+    resultR = cv.matchTemplate(src, revival, cv.TM_SQDIFF)
+    min_val2, max_val2, min_loc2, max_loc2 = cv.minMaxLoc(resultR)
+
+    tempD = cv.imread("Capture/data/end.png")
+    tempD = cv.cvtColor(tempD, cv.COLOR_RGB2GRAY)
+    resultD = cv.matchTemplate(srcD, temp, cv.TM_SQDIFF)
+    min_valD, max_valD, min_locD, max_locD = cv.minMaxLoc(resultD)
+
+    cv.rectangle(src, (830, 460), (920, 560), 255, -1)
+
+    if min_valD < 14000000:
+        time.sleep(3)
+        pyautogui.moveTo(950, 750)
+        pyautogui.click()
+        time.sleep(0.5)
+        pyautogui.moveTo(960, 1000)
+        pyautogui.click()
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        pyautogui.click()
+        return src, -10
+
+    if min_val2 < 14000000:
+        time.sleep(3)
+        pyautogui.moveTo(950, 750)
+        pyautogui.click()
+        time.sleep(0.5)
+        pyautogui.moveTo(960, 1000)
+        pyautogui.click()
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        pyautogui.click()
+        return src, -5
+
     if min_val < 15000000:
         pyautogui.moveTo(950, 880)
         pyautogui.click()
         time.sleep(20)
         pyautogui.moveTo(950, 880)
         pyautogui.click()
-        return 1
+        return src, 100
 
-    elif min_val1 < 1468192:
-
+    if min_val1 < 1468192:
         res = selection()
         result = mcts.input(res)
         if result == 0:
@@ -52,7 +82,9 @@ def item_selection(mcts):
         else:
             pyautogui.moveTo(970, 840)
             pyautogui.click()
-        return
+        return src, 10
+
+    return src, 0
 
 
 def selection():
@@ -143,18 +175,3 @@ def selection():
             case.append(adder)
         adder += 1
     return case
-
-
-def game_over():
-    src = pyautogui.screenshot()
-    src = np.array(src)
-    src = cv.cvtColor(src, cv.COLOR_RGB2GRAY)
-    temp = cv.imread("Capture/data/end.png")
-    temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
-    result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-
-    if min_val < 14000000:
-        return True
-    else:
-        return False

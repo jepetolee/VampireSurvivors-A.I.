@@ -1,26 +1,23 @@
 import torch
-
 import RL.agent as agent
 import RL.model as module
 import torch.optim as optim
 import numpy as np
+import gc
 
 gamma = 0.75
-
-import gc
 
 
 def run():
     count = 100000
     model = module.A2C()
-    device = torch.device('cuda')
+    device = torch.device('cpu')
     optimizer = optim.Adam(model.parameters(), lr=0.01)
-    r_latest =60
-    model.load_state_dict(torch.load('./save.pt'))
+    #  model.load_state_dict(torch.load('./save.pt'))
 
     while count > 0:
         model.to(device)
-        s_list, a_list, r_list, policy_list = agent.run_once(model,r_latest)
+        s_list, a_list, r_list, policy_list = agent.run_once(model)
         s_len = len(s_list)
         # protection of memory-error
         if s_len > 30:
@@ -39,9 +36,8 @@ def run():
             policy_list = policy_list[s_len - 10:-1]
             s_list = s_list1
             del s_list1
-        if r_latest < r_list[-1] * 10:
-            r_latest = r_list[-1] * 10
-        model.to('cpu')
+
+        # model.to('cpu')
         for i in range(3):
             model.set_recurrent_buffers(buf_size=len(r_list))
             s_prime_list = np.array(s_prime_list)
@@ -86,9 +82,9 @@ def run():
             del prior_policy
             del a_vec
             surrogated_loss1 = ratio * advantage_vec
-            surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1)*advantage_vec
-            loss = - torch.min(surrogated_loss1, surrogated_loss2).mean()\
-                   + torch.nn.functional.smooth_l1_loss(value_s_vec,target_vec.detach()).mean()
+            surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1) * advantage_vec
+            loss = - torch.min(surrogated_loss1, surrogated_loss2).mean() \
+                   + torch.nn.functional.smooth_l1_loss(value_s_vec, target_vec.detach()).mean()
             del surrogated_loss1
             del surrogated_loss2
             del target_vec
