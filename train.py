@@ -5,6 +5,7 @@ import torch.optim as optim
 import numpy as np
 import gc
 import time
+
 gamma = 0.75
 
 
@@ -14,35 +15,34 @@ def run():
     model = module.A2C()
     device = torch.device('cpu')
     optimizer = optim.Adam(model.parameters(), lr=0.01)
-    model.load_state_dict(torch.load('./save.pt'))
+    #  model.load_state_dict(torch.load('./save.pt'))
 
     while count > 0:
         model.to(device)
         s_list, a_list, r_list, policy_list = agent.run_once(model)
         s_len = len(s_list)
         # protection of memory-error
-        num =int (s_len/30)
-        left = s_len%30
-        if left>0:
-            num+=1
-
+        num = int(s_len / 30)
+        left = s_len % 30
+        if left > 0:
+            num += 1
 
         # model.to('cpu')
         for t in range(num):
             if s_len > 30:
-                s_list1 = s_list[s_len - (t+1)*30:-t*30]
-                s_prime_list = s_list[s_len - 1-(t+1)*30:-1-t*30]
-                r_list1 = r_list[s_len - (t+1)*30:-t*30]
-                a_list1 = a_list[s_len - (t+1)*30:-t*30]
-                policy_list1 = policy_list[s_len -1-(t+1)*30:-1-t*30]
+                s_list1 = s_list[s_len - (t + 1) * 30:-t * 30]
+                s_prime_list = s_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
+                r_list1 = r_list[s_len - (t + 1) * 30:-t * 30]
+                a_list1 = a_list[s_len - (t + 1) * 30:-t * 30]
+                policy_list1 = policy_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
 
             else:
                 s_list1 = s_list[1:left]
-                s_prime_list = s_list[:left-1]
+                s_prime_list = s_list[:left - 1]
                 r_list1 = r_list[1:left]
                 a_list1 = a_list[1:left]
-                policy_list1 = policy_list[:left-1]
-            if len(s_list1) ==0 or len(s_prime_list) ==0:
+                policy_list1 = policy_list[:left - 1]
+            if len(s_list1) == 0 or len(s_prime_list) == 0:
                 break
             for i in range(3):
                 model.set_recurrent_buffers(buf_size=len(r_list1))
@@ -72,6 +72,7 @@ def run():
                 for td_error in delt[::-1]:
                     advantage = gamma * 0.97 * advantage + td_error
                     advantage_list.append([advantage])
+
                 advantage_list.reverse()
                 advantage_vec = torch.tensor(advantage_list, dtype=torch.float).to('cpu')
                 del advantage_list
@@ -103,9 +104,8 @@ def run():
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
 
-
     count -= 1
-    if count % 10 == 0:
+    if count % 5 == 0:
         torch.save(model.state_dict(), "./save.pt")
     model.del_dat()
     del loss

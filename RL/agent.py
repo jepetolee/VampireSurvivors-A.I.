@@ -83,16 +83,17 @@ def run_once(model):
             reward = 1
             if result < 0:
                 for i in range(10):
-                    r_list[-(i + 1)] += (result - 3 * i)
+                    r_list[-9+i] += (result - 3 * i)
                 reward = 0
             elif result > 0:
                 for i in range(10):
-                    r_list[-(i + 1)] += (result - i)
+                    r_list[-9+i] += (result + i)
                 reward += result
             else:
                 reward_sum += reward
                 reward = 1
             r_list.append(reward)
+
 
     if mcts_worker.checkwork():
         mcts_worker.append_reward(int((reward_sum) / 10))
