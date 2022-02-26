@@ -1,6 +1,4 @@
 import numpy as np
-import math
-import collections
 import random
 
 
@@ -40,7 +38,7 @@ class MCTS_Node:
         if rollout:
             rand = [1, 2, 3]
             rand = random.choice(rand)
-            if rand ==1:
+            if rand == 1:
                 move = random.choice(items)
                 self.idx = move
             else:
@@ -62,6 +60,7 @@ class MCTS_Node:
 
 
 class MCTS:
+
     def __init__(self):
         self.Node = MCTS_Node()
 
@@ -71,20 +70,17 @@ class MCTS:
     def input(self, items, rollout=True):
         select = self.Node.search(items, rollout)
         for i in range(len(items)):
-
             if select == items[i]:
                 return i
 
     def append_reward(self, reward):
         self.Node.update(reward)
 
-
-
     def checkwork(self):
         if self.Node.sequence != 0:
             return True
         else:
-            False
+            return False
 
     def backup(self):
         self.Node.backup()

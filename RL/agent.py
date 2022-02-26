@@ -13,7 +13,7 @@ def run_once(model):
     pyautogui.FAILSAFE = False
 
     mcts_worker = mcts.MCTS()
-    mcts_worker.backup()
+    #    mcts_worker.backup()
 
     device = torch.device('cpu')
 
@@ -40,13 +40,18 @@ def run_once(model):
     pyautogui.click()
 
     time.sleep(1.5)
+
     probal = 1
     pydirectinput.keyDown("down")
+
     reward_sum = 0
+
     setting, result = Capture.item_selection(mcts_worker)
+
     with torch.no_grad():
 
         while result >= 0:
+
             s_list.append(setting)
             setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724).to(device)
 
@@ -69,7 +74,9 @@ def run_once(model):
                 pydirectinput.keyUp("left")
             elif probal == 3:
                 pydirectinput.keyUp("right")
+
             probal = a
+
             if a == 0:
                 pydirectinput.keyDown("up")
             elif a == 1:
@@ -80,24 +87,32 @@ def run_once(model):
                 pydirectinput.keyDown("right")
 
             setting, result = Capture.item_selection(mcts_worker)
-            reward = 1
+
             if result < 0:
+
                 for i in range(10):
-                    r_list[-9+i] += (result - 3 * i)
+                    reward_sum += result - 3 * i
+                    r_list[-9 + i] += (result - 3 * i)
+
                 reward = 0
+
             elif result > 0:
+
                 for i in range(10):
-                    r_list[-9+i] += (result + i)
-                reward += result
+                    r_list[-9 + i] += (result + i)
+
+                reward = 0
+
             else:
-                reward_sum += reward
                 reward = 1
+
+            reward_sum += reward
             r_list.append(reward)
 
-
     if mcts_worker.checkwork():
-        mcts_worker.append_reward(int((reward_sum) / 10))
+        mcts_worker.append_reward(int(reward_sum / 10))
         mcts_worker.save()
 
     gc.collect()
+
     return s_list, a_list, r_list, p_list
