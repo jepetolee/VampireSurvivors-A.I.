@@ -8,17 +8,16 @@ import pydirectinput
 import gc
 
 
-def run_once(model):
+def run_once(model, device):
     pydirectinput.FAILSAFE = False
     pyautogui.FAILSAFE = False
 
     mcts_worker = mcts.MCTS()
     #    mcts_worker.backup()
 
-    device = torch.device('cpu')
+    s_list, a_list, r_list, p_list, mcts_list = list(), list(), list(), list(), list()
 
-    s_list, a_list, r_list, p_list = list(), list(), list(), list()
-
+    model.to(device)
     model.set_recurrent_buffers(buf_size=1)
 
     pyautogui.moveTo(980, 660)
@@ -45,17 +44,20 @@ def run_once(model):
     pydirectinput.keyDown("down")
 
     reward_sum = 0
-
-    setting, result = Capture.item_selection(mcts_worker)
+    ts= time.time()
+    setting, mcts_tensor, result = Capture.item_selection(mcts_worker)
 
     with torch.no_grad():
 
         while result >= 0:
 
             s_list.append(setting)
+            mcts_list.append(mcts_tensor)
+
+            mcts_setting = torch.tensor(mcts_tensor).float().reshape(-1, 3000).to(device)
             setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724).to(device)
 
-            prob = model.pi(x=setting, softmax_dim=1)
+            prob = model.pi(x=setting, mcts_setting=mcts_setting, softmax_dim=1)
             prob = prob.view(-1)
 
             del setting
@@ -86,7 +88,7 @@ def run_once(model):
             elif a == 3:
                 pydirectinput.keyDown("right")
 
-            setting, result = Capture.item_selection(mcts_worker)
+            setting, mcts_tensor, result = Capture.item_selection(mcts_worker)
 
             if result < 0:
 
@@ -108,6 +110,8 @@ def run_once(model):
 
             reward_sum += reward
             r_list.append(reward)
+            if time.time() -ts >5:
+                break
 
     if mcts_worker.checkwork():
         mcts_worker.append_reward(int(reward_sum / 10))
@@ -115,4 +119,4 @@ def run_once(model):
 
     gc.collect()
 
-    return s_list, a_list, r_list, p_list
+    return s_list, a_list, r_list, p_list, mcts_list

@@ -46,8 +46,9 @@ def item_selection(mcts):
         pyautogui.click()
         time.sleep(0.5)
         pyautogui.click()
+        mcts_tensor = mcts.tensor()
 
-        return src, -10
+        return src, mcts_tensor, -75
 
     if min_val2 < 14000000:
 
@@ -61,8 +62,9 @@ def item_selection(mcts):
         pyautogui.click()
         time.sleep(0.5)
         pyautogui.click()
+        mcts_tensor = mcts.tensor()
 
-        return src, -5
+        return src, mcts_tensor, -25
 
     if min_val < 15000000:
 
@@ -72,7 +74,8 @@ def item_selection(mcts):
         pyautogui.moveTo(950, 880)
         pyautogui.click()
 
-        return src, 30
+        mcts_tensor = mcts.tensor()
+        return src, mcts_tensor, 20
 
     if min_val1 < 1468192:
 
@@ -92,9 +95,11 @@ def item_selection(mcts):
             pyautogui.moveTo(970, 480)
             pyautogui.click()
 
-        return src, 15
+        mcts_tensor = mcts.tensor()
+        return src, mcts_tensor, 15
 
-    return src, 0
+    mcts_tensor = mcts.tensor()
+    return src, mcts_tensor, 0
 
 
 def selection():

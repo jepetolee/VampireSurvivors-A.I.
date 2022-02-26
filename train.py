@@ -12,8 +12,10 @@ weight = 0.84
 tau = 0.97
 
 
-def run():
-    time.sleep(3)
+def train():
+    for i in range(5):
+        print("시작하기까지..." + str(i + 1) + "초 남았습니다.")
+        time.sleep(1)
 
     epoch = 100000
     model = module.A2C()
@@ -23,8 +25,7 @@ def run():
 
     while epoch > 0:
 
-        model.to(device)
-        s_list, a_list, r_list, policy_list = agent.run_once(model)
+        s_list, a_list, r_list, policy_list, mcts_list = agent.run_once(model, device)
         s_len = len(s_list)
         # protection of memory-error
 
@@ -37,14 +38,18 @@ def run():
         for t in range(num):
             if s_len > 30:
                 s_list1 = s_list[s_len - (t + 1) * 30:-t * 30]
+                mcts_list1 = mcts_list[s_len - (t + 1) * 30:-t * 30]
                 s_prime_list = s_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
+                mcts_prime_list = mcts_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
                 r_list1 = r_list[s_len - (t + 1) * 30:-t * 30]
                 a_list1 = a_list[s_len - (t + 1) * 30:-t * 30]
                 policy_list1 = policy_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
 
             else:
                 s_list1 = s_list[1:left]
+                mcts_list1 = mcts_list[1:left]
                 s_prime_list = s_list[:left - 1]
+                mcts_prime_list = mcts_list[:left - 1]
                 r_list1 = r_list[1:left]
                 a_list1 = a_list[1:left]
                 policy_list1 = policy_list[:left - 1]
@@ -58,9 +63,14 @@ def run():
 
                 s_prime_list = np.array(s_prime_list)
                 s_prime_vec = torch.tensor(s_prime_list).float().reshape(-1, 1, 1080, 1724).to('cpu')
-                G = model.value(s_prime_vec).squeeze(1).to('cpu')
+
+                mcts_prime_list = np.array(mcts_prime_list)
+                mcts_prime_vec = torch.tensor(mcts_prime_list).float().reshape(-1, 3000).to('cpu')
+
+                G = model.value(s_prime_vec, mcts_prime_vec).squeeze(1).to('cpu')
 
                 del s_prime_vec
+                del mcts_prime_vec
 
                 r_vec = torch.tensor(r_list1).float().to('cpu')
                 target_vec = r_vec + gamma * G
@@ -70,7 +80,10 @@ def run():
 
                 s_list1 = np.array(s_list1)
                 s_vec = torch.tensor(s_list1).float().reshape(-1, 1, 1080, 1724).to('cpu')
-                value_s_vec = model.value(s_vec).squeeze(1).to('cpu')
+
+                mcts_list1 = np.array(mcts_list1)
+                mcts_vec = torch.tensor(mcts_list1).float().reshape(-1, 3000).to('cpu')
+                value_s_vec = model.value(s_vec, mcts_vec).squeeze(1).to('cpu')
                 delt = (target_vec - value_s_vec).detach().to('cpu').numpy()
 
                 policy_list1 = np.array(policy_list1)
@@ -89,9 +102,10 @@ def run():
                 advantage_vec = (advantage_vec - advantage_vec.mean()) / advantage_vec.std()
                 a_list1 = np.array(a_list1)
                 a_vec = torch.tensor(a_list1, dtype=torch.float).reshape(-1).unsqueeze(-1).to('cpu')
-                pi_val = model.pi(s_vec, softmax_dim=1).to('cpu')
+                pi_val = model.pi(s_vec, mcts_vec, softmax_dim=1).to('cpu')
 
                 del s_vec
+                del mcts_vec
                 pi_all = pi_val.squeeze(1).gather(1, a_vec.type(torch.int64))
 
                 del pi_val
@@ -130,4 +144,4 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    train()

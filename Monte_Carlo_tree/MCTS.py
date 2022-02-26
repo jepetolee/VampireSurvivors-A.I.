@@ -58,6 +58,10 @@ class MCTS_Node:
     def save(self):
         np.save("Monte_Carlo_tree/mcts", self.node.tensor)
 
+    def mcts_vector(self):
+        return self.node.tensor
+
+
 
 class MCTS:
 
@@ -84,6 +88,9 @@ class MCTS:
 
     def backup(self):
         self.Node.backup()
+
+    def tensor(self):
+        return self.Node.mcts_vector()
 
     def save(self):
         self.Node.save()

@@ -54,19 +54,19 @@ class A2C(nn.Module):
         super(A2C, self).__init__()
 
         self.encoder = FeatureEncoder()
-
+        self.mcts = nn.Linear(3000, self.encoder.h1)
         self.p = nn.Linear(self.encoder.h1, 5)
         self.v = nn.Linear(self.encoder.h1, 1)
 
-    def pi(self, x, softmax_dim=1):
-
+    def pi(self, x, mcts_setting, softmax_dim=1):
         x = self.encoder(x)
-
+        mcts_setting = self.mcts(mcts_setting)
+        x = x + mcts_setting
         x = self.p(x)
-
         prob = func.softmax(x, dim=softmax_dim)
 
         del x
+        del mcts_setting
         gc.collect()
         torch.cuda.empty_cache()
 
@@ -78,10 +78,10 @@ class A2C(nn.Module):
     def del_dat(self):
         self.encoder.del_lstm()
 
-    def value(self, x):
-
+    def value(self, x, mcts_setting):
         x = self.encoder(x)
-
+        mcts_setting = self.mcts(mcts_setting)
+        x = x + mcts_setting
         x = self.v(x)
 
         return x
