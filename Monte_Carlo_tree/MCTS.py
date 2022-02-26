@@ -4,7 +4,7 @@ import random
 
 class Node:
     def __init__(self):
-        self.tensor = np.zeros((100, 30), np.int32)
+        self.tensor = np.zeros((150, 30), np.int32)
         self.sequence = 0
 
     def expand(self, items):

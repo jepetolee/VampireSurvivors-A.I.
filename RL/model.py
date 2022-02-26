@@ -54,15 +54,21 @@ class A2C(nn.Module):
         super(A2C, self).__init__()
 
         self.encoder = FeatureEncoder()
-        self.mcts = nn.Linear(3000, self.encoder.h1)
+
+        self.mcts = nn.Linear(3000, 1)
+
         self.p = nn.Linear(self.encoder.h1, 5)
+        self.pred = nn.Linear(6, 5)
+
         self.v = nn.Linear(self.encoder.h1, 1)
+        self.value = nn.Linear(2, 1)
 
     def pi(self, x, mcts_setting, softmax_dim=1):
         x = self.encoder(x)
-        mcts_setting = self.mcts(mcts_setting)
-        x = x + mcts_setting
-        x = self.p(x)
+        mcts_setting = func.leaky_relu(self.mcts(mcts_setting))
+        x = func.leaky_relu(self.p(x))
+        x = torch.cat([x, mcts_setting], dim=1)
+        x = self.pred(x)
         prob = func.softmax(x, dim=softmax_dim)
 
         del x
@@ -80,8 +86,8 @@ class A2C(nn.Module):
 
     def value(self, x, mcts_setting):
         x = self.encoder(x)
-        mcts_setting = self.mcts(mcts_setting)
-        x = x + mcts_setting
-        x = self.v(x)
-
+        mcts_setting = func.leaky_relu(self.mcts(mcts_setting))
+        x = func.leaky_relu(self.v(x))
+        x = torch.cat([x, mcts_setting], dim=1)
+        x = self.value(x)
         return x

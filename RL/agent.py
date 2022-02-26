@@ -44,7 +44,6 @@ def run_once(model, device):
     pydirectinput.keyDown("down")
 
     reward_sum = 0
-    ts= time.time()
     setting, mcts_tensor, result = Capture.item_selection(mcts_worker)
 
     with torch.no_grad():
@@ -110,8 +109,6 @@ def run_once(model, device):
 
             reward_sum += reward
             r_list.append(reward)
-            if time.time() -ts >5:
-                break
 
     if mcts_worker.checkwork():
         mcts_worker.append_reward(int(reward_sum / 10))

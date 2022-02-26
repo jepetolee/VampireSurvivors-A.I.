@@ -132,9 +132,9 @@ def train():
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
 
-    epoch -= 1
     if epoch % 5 == 0:
         torch.save(model.state_dict(), "./save.pt")
+    epoch -= 1
 
     model.del_dat()
 

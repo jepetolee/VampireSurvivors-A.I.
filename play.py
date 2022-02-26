@@ -1,11 +1,6 @@
 import torch
 import RL.agent as agent
 import RL.model as module
-import torch.optim as optim
-import torch.nn.functional as F
-import numpy as np
-import gc
-import time
 
 
 def run():
