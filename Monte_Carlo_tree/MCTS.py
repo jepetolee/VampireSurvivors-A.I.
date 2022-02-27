@@ -5,23 +5,23 @@ import random
 class Node:
     def __init__(self):
         self.tensor = np.zeros((100, 30), np.int32)
+        self.episode = np.zeros((100, 30), np.int32)
         self.sequence = 0
 
-    def expand(self, items):
-        self.S = self.tensor[self.sequence]
+    def update(self, score):
+        for episode in range(self.sequence):
+            for idx in range(30):
+                if self.episode[episode][idx] == 1:
+                    self.tensor[episode][idx] += score
+
+    def choose(self, items):
+
         self.items = items
-
-    def update(self, idx, score):
-        self.S[idx] += score
-        self.tensor[self.sequence] = self.S
-        self.sequence += 1
-
-    def choose(self):
         idx = 0
         for index in self.items:
-            if self.S[index] > self.S[idx]:
+            if self.tensor[self.sequence][index] > self.tensor[self.sequence][idx]:
                 idx = index
-
+        self.sequence += 1
         return idx
 
 
@@ -33,24 +33,23 @@ class MCTS_Node:
 
     def search(self, items, rollout=True):
 
-        self.node.expand(items)
-
         if rollout:
-            rand = [1, 2, 3]
-            rand = random.choice(rand)
-            if rand == 1:
+            rand = [0,1]
+            if random.choice(rand) == 1:
                 move = random.choice(items)
                 self.idx = move
             else:
-                self.idx = self.node.choose()
+                self.idx = self.node.choose(items)
                 move = items[self.idx]
         else:
-            self.idx = self.node.choose()
+            self.idx = self.node.choose(items)
+            self.node.episode[self.sequence][self.idx] = 1
             move = items[self.idx]
+        self.sequence = self.node.sequence
         return move
 
     def update(self, reward):
-        self.node.update(self.idx, reward)
+        self.node.update(reward)
 
     def backup(self):
         self.node.tensor = np.load("Monte_Carlo_tree/mcts.npy")
@@ -60,7 +59,6 @@ class MCTS_Node:
 
     def mcts_vector(self):
         return self.node.tensor
-
 
 
 class MCTS:

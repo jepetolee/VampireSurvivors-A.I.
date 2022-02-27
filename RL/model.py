@@ -61,7 +61,7 @@ class A2C(nn.Module):
         self.pred = nn.Linear(6, 5)
 
         self.v = nn.Linear(self.encoder.h1, 1)
-        self.value = nn.Linear(2, 1)
+        self.valued = nn.Linear(2, 1)
 
     def pi(self, x, mcts_setting, softmax_dim=1):
         x = self.encoder(x)
@@ -89,5 +89,5 @@ class A2C(nn.Module):
         mcts_setting = func.leaky_relu(self.mcts(mcts_setting))
         x = func.leaky_relu(self.v(x))
         x = torch.cat([x, mcts_setting], dim=1)
-        x = self.value(x)
+        x = self.valued(x)
         return x

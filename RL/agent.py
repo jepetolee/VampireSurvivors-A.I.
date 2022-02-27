@@ -13,7 +13,7 @@ def run_once(model, device):
     pyautogui.FAILSAFE = False
 
     mcts_worker = mcts.MCTS()
-    #    mcts_worker.backup()
+    mcts_worker.backup()
 
     s_list, a_list, r_list, p_list, mcts_list = list(), list(), list(), list(), list()
 
@@ -91,14 +91,13 @@ def run_once(model, device):
 
             if result < 0:
 
-                for i in range(10):
+                for i in range(5):
                     reward_sum += result - 3 * i
-                    r_list[-9 + i] += (result - 3 * i)
+                    r_list[-4 + i] += (result - 3 * i)
 
                 reward = 0
 
             elif result > 0:
-
                 for i in range(10):
                     r_list[-9 + i] += (result + i)
 
@@ -110,10 +109,12 @@ def run_once(model, device):
             reward_sum += reward
             r_list.append(reward)
 
-    if mcts_worker.checkwork():
-        mcts_worker.append_reward(int(reward_sum / 10))
-        mcts_worker.save()
+        if mcts_worker.checkwork():
+            mcts_worker.append_reward(int(reward_sum / 10))
+            mcts_worker.save()
 
-    gc.collect()
+        gc.collect()
+
+
 
     return s_list, a_list, r_list, p_list, mcts_list

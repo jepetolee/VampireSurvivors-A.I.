@@ -2,6 +2,7 @@ import time
 import cv2 as cv
 import numpy as np
 import pyautogui
+import pydirectinput
 
 
 def item_selection(mcts):
@@ -50,7 +51,7 @@ def item_selection(mcts):
 
         return src, mcts_tensor, -75
 
-    if min_val2 < 14000000:
+    """ if min_val2 < 14000000:
 
         time.sleep(3)
         pyautogui.moveTo(950, 750)
@@ -64,13 +65,13 @@ def item_selection(mcts):
         pyautogui.click()
         mcts_tensor = mcts.tensor()
 
-        return src, mcts_tensor, -25
+        return src, mcts_tensor, -25"""
 
     if min_val < 15000000:
 
         pyautogui.moveTo(950, 880)
         pyautogui.click()
-        time.sleep(20)
+        pydirectinput.press('esc')
         pyautogui.moveTo(950, 880)
         pyautogui.click()
 
@@ -81,6 +82,7 @@ def item_selection(mcts):
 
         res = selection()
         result = mcts.input(res)
+
 
         if result == 3:
             pyautogui.moveTo(970, 840)

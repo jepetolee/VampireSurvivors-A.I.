@@ -19,8 +19,11 @@ def train():
 
     epoch = 100000
     model = module.A2C()
-    #  model.load_state_dict(torch.load('./save.pt'))
     device = torch.device('cpu')
+    model.to(device)
+   # print(torch.load('./save.pt'))
+    model.load_state_dict(torch.load('./save.pt'))
+
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
     while epoch > 0:
@@ -31,20 +34,23 @@ def train():
 
         num = int(s_len / 30)
         left = s_len % 30
-        if left > 0:
-            num += 1
+        if left >0:
+            num+=1
 
         # model.to('cpu')
         for t in range(num):
-            if s_len > 30:
-                s_list1 = s_list[s_len - (t + 1) * 30:-t * 30]
-                mcts_list1 = mcts_list[s_len - (t + 1) * 30:-t * 30]
-                s_prime_list = s_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
-                mcts_prime_list = mcts_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
-                r_list1 = r_list[s_len - (t + 1) * 30:-t * 30]
-                a_list1 = a_list[s_len - (t + 1) * 30:-t * 30]
+            if num > t+1:
+                s_list1 = s_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
+                mcts_list1 = mcts_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
+                if t!=0:
+                    s_prime_list = s_list[s_len - (t + 1) * 30:-t * 30]
+                    mcts_prime_list = mcts_list[s_len - (t + 1) * 30:-t * 30]
+                else:
+                    s_prime_list = s_list[s_len - (t + 1) * 30:]
+                    mcts_prime_list = mcts_list[s_len - (t + 1) * 30:]
+                r_list1 = r_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
+                a_list1 = a_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
                 policy_list1 = policy_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
-
             else:
                 s_list1 = s_list[1:left]
                 mcts_list1 = mcts_list[1:left]
@@ -52,13 +58,11 @@ def train():
                 mcts_prime_list = mcts_list[:left - 1]
                 r_list1 = r_list[1:left]
                 a_list1 = a_list[1:left]
-                policy_list1 = policy_list[:left - 1]
-
+                policy_list1 = policy_list[1:left]
             if len(s_list1) == 0 or len(s_prime_list) == 0:
                 break
 
             for i in range(3):
-
                 model.set_recurrent_buffers(buf_size=len(r_list1))
 
                 s_prime_list = np.array(s_prime_list)
@@ -131,16 +135,16 @@ def train():
                 loss.backward(retain_graph=True)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
+        if epoch%20==0:
+            torch.save(model.state_dict(), "./save.pt")
+        epoch -= 1
 
-    if epoch % 5 == 0:
-        torch.save(model.state_dict(), "./save.pt")
-    epoch -= 1
+        model.del_dat()
+        torch.cuda.empty_cache()
+        gc.collect()
 
-    model.del_dat()
 
-    del loss
-    torch.cuda.empty_cache()
-    gc.collect()
+
 
 
 if __name__ == "__main__":
