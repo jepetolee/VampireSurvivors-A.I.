@@ -94,7 +94,7 @@ def train():
                 prior_policy = torch.from_numpy(policy_list1).reshape(-1).unsqueeze(-1).to('cpu')
 
                 advantage_list = []
-                advantage = 0.0
+                advantage = 1e-9
                 for td_error in delt[::-1]:
                     advantage = gamma * tau * advantage + td_error
                     advantage_list.append([advantage])
@@ -103,7 +103,7 @@ def train():
                 advantage_vec = torch.tensor(advantage_list, dtype=torch.float).to('cpu')
                 del advantage_list
 
-                advantage_vec = (advantage_vec - advantage_vec.mean()) / advantage_vec.std()
+                advantage_vec = (advantage_vec - advantage_vec.mean()) / (advantage_vec.std() +(2e-5))
                 a_list1 = np.array(a_list1)
                 a_vec = torch.tensor(a_list1, dtype=torch.float).reshape(-1).unsqueeze(-1).to('cpu')
                 pi_val = model.pi(s_vec, mcts_vec, softmax_dim=1).to('cpu')
@@ -114,16 +114,17 @@ def train():
 
                 del pi_val
 
-                ratio = torch.exp(torch.log(pi_all) - torch.log(prior_policy))
+                ratio = torch.exp(torch.log(pi_all+2e-5) - torch.log(prior_policy+1e-2))+(2e-5)
+
 
                 del pi_all
                 del prior_policy
                 del a_vec
 
                 surrogated_loss1 = ratio * advantage_vec
-                surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1) * advantage_vec
+                surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1) * advantage_vec+1e-3
                 loss = - torch.min(surrogated_loss1, surrogated_loss2).mean() \
-                       + F.smooth_l1_loss(value_s_vec, target_vec.detach()).mean() * weight
+                       + F.smooth_l1_loss(value_s_vec, target_vec.detach()).mean() * weight +1e-3
 
                 del surrogated_loss1
                 del surrogated_loss2

@@ -58,7 +58,11 @@ def run_once(model, device):
 
             prob = model.pi(x=setting, mcts_setting=mcts_setting, softmax_dim=1)
             prob = prob.view(-1)
+            nanchecker = torch.isfinite(prob)
 
+            for i in range(5):
+                if  nanchecker[i] != True:
+                    prob= torch.tensor([0.2,0.2,0.2,0.2,0.2]).to(device)
             del setting
             torch.cuda.empty_cache()
 
@@ -91,15 +95,15 @@ def run_once(model, device):
 
             if result < 0:
 
-                for i in range(5):
-                    reward_sum += result - 3 * i
-                    r_list[-4 + i] += (result - 3 * i)
+                for i in range(9):
+                    reward_sum += result - 4 * i
+                    r_list[-9 + i] += (result - 4 * i)
 
                 reward = 0
 
             elif result > 0:
                 for i in range(10):
-                    r_list[-9 + i] += (result + i)
+                    r_list[-9 + i] += (result +2* i)
 
                 reward = 0
 
