@@ -11,6 +11,7 @@ class Node:
     def update(self, score):
         for episode in range(self.sequence):
             for idx in range(30):
+
                 if self.episode[episode][idx] == 1:
                     self.tensor[episode][idx] += score
 
@@ -21,8 +22,10 @@ class Node:
         for index in self.items:
             if self.tensor[self.sequence][index] > self.tensor[self.sequence][idx]:
                 idx = index
-        self.sequence += 1
         return idx
+
+    def backup(self):
+        self.tensor = np.load("Monte_Carlo_tree/mcts.npy")
 
 
 class MCTS_Node:
@@ -34,25 +37,24 @@ class MCTS_Node:
     def search(self, items, rollout=True):
 
         if rollout:
-            rand = [0,1]
-            if random.choice(rand) == 1:
-                move = random.choice(items)
-                self.idx = move
-            else:
-                self.idx = self.node.choose(items)
-                move = items[self.idx]
+            self.idx = random.choice(items)
         else:
             self.idx = self.node.choose(items)
-            self.node.episode[self.sequence][self.idx] = 1
-            move = items[self.idx]
-        self.sequence = self.node.sequence
+
+        move = 0
+        for i in range(len(items)):
+            if items[i] == self.idx:
+                move = i
+        self.node.episode[self.node.sequence][self.idx] = 1
+        self.node.sequence += 1
+        self.sequence += 1
         return move
 
     def update(self, reward):
         self.node.update(reward)
 
     def backup(self):
-        self.node.tensor = np.load("Monte_Carlo_tree/mcts.npy")
+        self.node.backup()
 
     def save(self):
         np.save("Monte_Carlo_tree/mcts", self.node.tensor)
@@ -66,14 +68,8 @@ class MCTS:
     def __init__(self):
         self.Node = MCTS_Node()
 
-    def call_saves(self):
-        self.Node.backup()
-
     def input(self, items, rollout=True):
-        select = self.Node.search(items, rollout)
-        for i in range(len(items)):
-            if select == items[i]:
-                return i
+        return self.Node.search(items, rollout)
 
     def append_reward(self, reward):
         self.Node.update(reward)

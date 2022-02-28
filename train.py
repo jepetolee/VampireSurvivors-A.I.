@@ -4,6 +4,7 @@ import RL.model as module
 import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
+from torch.distributions import Categorical
 import gc
 import time
 
@@ -21,7 +22,7 @@ def train():
     model = module.A2C()
     device = torch.device('cpu')
     model.to(device)
-   # print(torch.load('./save.pt'))
+    # print(torch.load('./save.pt'))
     model.load_state_dict(torch.load('./save.pt'))
 
     optimizer = optim.Adam(model.parameters(), lr=0.01)
@@ -34,15 +35,15 @@ def train():
 
         num = int(s_len / 30)
         left = s_len % 30
-        if left >0:
-            num+=1
+        if left > 0:
+            num += 1
 
         # model.to('cpu')
         for t in range(num):
-            if num > t+1:
+            if num > t + 1:
                 s_list1 = s_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
                 mcts_list1 = mcts_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
-                if t!=0:
+                if t != 0:
                     s_prime_list = s_list[s_len - (t + 1) * 30:-t * 30]
                     mcts_prime_list = mcts_list[s_len - (t + 1) * 30:-t * 30]
                 else:
@@ -94,7 +95,7 @@ def train():
                 prior_policy = torch.from_numpy(policy_list1).reshape(-1).unsqueeze(-1).to('cpu')
 
                 advantage_list = []
-                advantage = 1e-9
+                advantage = 1e-2
                 for td_error in delt[::-1]:
                     advantage = gamma * tau * advantage + td_error
                     advantage_list.append([advantage])
@@ -103,28 +104,28 @@ def train():
                 advantage_vec = torch.tensor(advantage_list, dtype=torch.float).to('cpu')
                 del advantage_list
 
-                advantage_vec = (advantage_vec - advantage_vec.mean()) / (advantage_vec.std() +(2e-5))
+                advantage_vec = (advantage_vec - advantage_vec.mean()) / (advantage_vec.std() + (2e-5))
                 a_list1 = np.array(a_list1)
                 a_vec = torch.tensor(a_list1, dtype=torch.float).reshape(-1).unsqueeze(-1).to('cpu')
                 pi_val = model.pi(s_vec, mcts_vec, softmax_dim=1).to('cpu')
 
                 del s_vec
                 del mcts_vec
-                pi_all = pi_val.squeeze(1).gather(1, a_vec.type(torch.int64))
+
+                pi_all = Categorical(pi_val)
 
                 del pi_val
 
-                ratio = torch.exp(torch.log(pi_all+2e-5) - torch.log(prior_policy+1e-2))+(2e-5)
-
+                ratio = torch.exp(pi_all.log_prob(a_vec) - prior_policy)
 
                 del pi_all
                 del prior_policy
                 del a_vec
 
                 surrogated_loss1 = ratio * advantage_vec
-                surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1) * advantage_vec+1e-3
+                surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1) * advantage_vec
                 loss = - torch.min(surrogated_loss1, surrogated_loss2).mean() \
-                       + F.smooth_l1_loss(value_s_vec, target_vec.detach()).mean() * weight +1e-3
+                       + F.smooth_l1_loss(value_s_vec, target_vec.detach()).mean() * weight
 
                 del surrogated_loss1
                 del surrogated_loss2
@@ -136,16 +137,13 @@ def train():
                 loss.backward(retain_graph=True)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
-        if epoch%20==0:
+        if epoch % 20 == 0:
             torch.save(model.state_dict(), "./save.pt")
         epoch -= 1
 
         model.del_dat()
         torch.cuda.empty_cache()
         gc.collect()
-
-
-
 
 
 if __name__ == "__main__":

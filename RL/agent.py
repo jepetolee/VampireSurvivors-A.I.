@@ -49,7 +49,6 @@ def run_once(model, device):
     with torch.no_grad():
 
         while result >= 0:
-
             s_list.append(setting)
             mcts_list.append(mcts_tensor)
 
@@ -58,17 +57,15 @@ def run_once(model, device):
 
             prob = model.pi(x=setting, mcts_setting=mcts_setting, softmax_dim=1)
             prob = prob.view(-1)
-            nanchecker = torch.isfinite(prob)
 
-            for i in range(5):
-                if  nanchecker[i] != True:
-                    prob= torch.tensor([0.2,0.2,0.2,0.2,0.2]).to(device)
             del setting
             torch.cuda.empty_cache()
 
-            a = Categorical(prob).sample().to('cpu')
-            p_list.append(prob[a].item())
-            a = a.numpy()
+            prob = Categorical(prob)
+            a = prob.sample()
+
+            p_list.append(prob.log_prob(a))
+            a=a.item()
             a_list.append(a)
 
             if probal == 0:
