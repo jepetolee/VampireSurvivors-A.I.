@@ -65,11 +65,11 @@ class A2C(nn.Module):
 
     def pi(self, x, mcts_setting, softmax_dim=1):
         x = self.encoder(x)
-        mcts_setting = func.leaky_relu(self.mcts(mcts_setting))
-        x = func.leaky_relu(self.p(x))
+        mcts_setting = func.elu(self.mcts(mcts_setting))
+        x = func.elu(self.p(x))
         x = torch.cat([x, mcts_setting], dim=1)
         x = self.pred(x)
-        prob = func.softmax(x, dim=softmax_dim)
+        prob = func.softmax(x-torch.max(x), dim=softmax_dim)
 
         del x
         del mcts_setting

@@ -44,23 +44,22 @@ def run_once(model, device):
     pydirectinput.keyDown("down")
 
     reward_sum = 0
-    setting, mcts_tensor, result = Capture.item_selection(mcts_worker)
+    settingt, mcts_tensor, result = Capture.item_selection(mcts_worker)
 
     with torch.no_grad():
 
         while result >= 0:
-            s_list.append(setting)
-            mcts_list.append(mcts_tensor)
 
             mcts_setting = torch.tensor(mcts_tensor).float().reshape(-1, 3000).to(device)
-            setting = torch.tensor(setting).float().reshape(-1, 1, 1080, 1724).to(device)
+            setting = torch.tensor(settingt).float().reshape(-1, 1, 1080, 1724).to(device)
 
             prob = model.pi(x=setting, mcts_setting=mcts_setting, softmax_dim=1)
             prob = prob.view(-1)
 
+            s_list.append(settingt)
+            mcts_list.append(mcts_tensor)
             del setting
             torch.cuda.empty_cache()
-
             prob = Categorical(prob)
             a = prob.sample()
 
@@ -88,13 +87,13 @@ def run_once(model, device):
             elif a == 3:
                 pydirectinput.keyDown("right")
 
-            setting, mcts_tensor, result = Capture.item_selection(mcts_worker)
+            settingt, mcts_tensor, result = Capture.item_selection(mcts_worker)
 
             if result < 0:
 
                 for i in range(9):
                     reward_sum += result - 4 * i
-                    r_list[-9 + i] += (result - 4 * i)
+                    r_list[-9 + i] += (result - 2 * i)
 
                 reward = 0
 
