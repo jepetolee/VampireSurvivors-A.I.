@@ -11,7 +11,7 @@ class Node:
     def update(self, score):
         for episode in range(self.sequence):
             for idx in range(30):
-
+                #self.tensor[episode][idx] =0
                 if self.episode[episode][idx] == 1:
                     self.tensor[episode][idx] += score
 

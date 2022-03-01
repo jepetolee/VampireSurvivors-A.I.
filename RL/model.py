@@ -69,7 +69,7 @@ class A2C(nn.Module):
         x = func.elu(self.p(x))
         x = torch.cat([x, mcts_setting], dim=1)
         x = self.pred(x)
-        prob = func.softmax(x-torch.max(x), dim=softmax_dim)
+        prob = func.log_softmax(x, dim=softmax_dim)
 
         del x
         del mcts_setting

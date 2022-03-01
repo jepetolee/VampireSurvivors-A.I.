@@ -91,9 +91,9 @@ def run_once(model, device):
 
             if result < 0:
 
-                for i in range(9):
-                    reward_sum += result - 4 * i
-                    r_list[-9 + i] += (result - 2 * i)
+                for i in range(10):
+                    reward_sum += result - 2 * i
+                    r_list[-9 + i] += (result - 4 * i)
 
                 reward = 0
 
