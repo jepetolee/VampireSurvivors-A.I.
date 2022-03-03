@@ -20,15 +20,14 @@ def train():
 
     epoch = 100000
     model = module.A2C()
-    device = torch.device('cpu')
+    device = torch.device('cuda')
     model.to(device)
-    # print(torch.load('./save.pt'))
     model.load_state_dict(torch.load('./save.pt'))
 
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
     while epoch > 0:
-
+        model.to(device)
         s_list, a_list, r_list, policy_list, mcts_list = agent.run_once(model, device)
         s_len = len(s_list)
         # protection of memory-error
@@ -38,7 +37,7 @@ def train():
         if left > 0:
             num += 1
 
-        # model.to('cpu')
+        model.to('cpu')
         for t in range(num):
             if num > t + 1:
                 s_list1 = s_list[s_len - 1 - (t + 1) * 30:-1 - t * 30]
@@ -126,7 +125,9 @@ def train():
                 surrogated_loss2 = torch.clamp(ratio, 0.9, 1.1) * advantage_vec
                 loss = - torch.min(surrogated_loss1, surrogated_loss2).mean() \
                        + F.smooth_l1_loss(value_s_vec, target_vec.detach()).mean() * weight
-
+                if torch.isfinite(loss) != True:
+                    print("ASSEI")
+                    break
                 del surrogated_loss1
                 del surrogated_loss2
                 del target_vec

@@ -1,3 +1,4 @@
+import gc
 import time
 import cv2 as cv
 import numpy as np
@@ -14,27 +15,31 @@ def item_selection(mcts):
     dropbox = cv.imread("Capture/data/dropbox.png")
     dropbox = cv.cvtColor(dropbox, cv.COLOR_RGB2GRAY)
     result = cv.matchTemplate(src, dropbox, cv.TM_SQDIFF)
-
+    del dropbox
     min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+    del result
 
     select = cv.imread("Capture/data/selection.png")
     select = cv.cvtColor(select, cv.COLOR_RGB2GRAY)
     result2 = cv.matchTemplate(src, select, cv.TM_SQDIFF)
-
+    del select
     min_val1, max_val1, min_loc1, max_loc1 = cv.minMaxLoc(result2)
+    del result2
 
     revival = cv.imread("Capture/data/revival.png")
     revival = cv.cvtColor(revival, cv.COLOR_RGB2GRAY)
     resultR = cv.matchTemplate(src, revival, cv.TM_SQDIFF)
-
+    del revival
     min_val2, max_val2, min_loc2, max_loc2 = cv.minMaxLoc(resultR)
+    del resultR
 
     tempD = cv.imread("Capture/data/end.png")
     tempD = cv.cvtColor(tempD, cv.COLOR_RGB2GRAY)
     resultD = cv.matchTemplate(src, tempD, cv.TM_SQDIFF)
-
+    del tempD
     min_valD, max_valD, min_locD, max_locD = cv.minMaxLoc(resultD)
-
+    del resultD
+    gc.collect()
     if min_valD < 14000000:
 
         time.sleep(3)
@@ -78,7 +83,7 @@ def item_selection(mcts):
         mcts_tensor = mcts.tensor()
         return src, mcts_tensor, 20
 
-    if min_val1 < 1468192:
+    if min_val1 < 1400000:
 
         res = selection()
         result = mcts.input(res)
@@ -210,6 +215,15 @@ def selection():
                 temp21, temp22, temp23, temp24, temp25,
                 temp26, temp27, temp28, temp29, temp30]
 
+    del temp1,temp2,temp3, temp4, temp5,\
+        temp6, temp7, temp8, temp9, temp10,\
+        temp11, temp12, temp13, temp14, temp15,\
+        temp16, temp17, temp18, temp19, temp20,\
+        temp21, temp22, temp23, temp24, temp25,\
+        temp26, temp27, temp28, temp29, temp30
+
+    gc.collect()
+
     thresholds = [10000000, 10000000, 10000000, 10000000, 10000000,
                   10000000, 10000000, 10000000, 10000000, 10000000,
                   10000000, 10000000, 10000000, 10000000, 10000000,
@@ -221,11 +235,18 @@ def selection():
     for temp in temp_all:
 
         result = cv.matchTemplate(src, temp, cv.TM_SQDIFF)
-
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-
+        del result
         if min_val < thresholds[adder]:
             case.append(adder)
         adder += 1
-
+    del temp_all
+    del thresholds
+    gc.collect()
+    if len(case) ==0:
+        print("case error")
+        case.append(5)
+        case.append(1)
+        case.append(2)
+        case.append(3)
     return case

@@ -49,7 +49,6 @@ def run_once(model, device):
     with torch.no_grad():
 
         while result >= 0:
-
             mcts_setting = torch.tensor(mcts_tensor).float().reshape(-1, 3000).to(device)
             setting = torch.tensor(settingt).float().reshape(-1, 1, 1080, 1724).to(device)
 
@@ -63,7 +62,7 @@ def run_once(model, device):
             prob = Categorical(prob)
             a = prob.sample()
 
-            p_list.append(prob.log_prob(a))
+            p_list.append(prob.log_prob(a).item())
             a=a.item()
             a_list.append(a)
 
@@ -90,22 +89,18 @@ def run_once(model, device):
             settingt, mcts_tensor, result = Capture.item_selection(mcts_worker)
 
             if result < 0:
-
                 for i in range(10):
                     reward_sum += result - 2 * i
                     r_list[-9 + i] += (result - 4 * i)
-
                 reward = 0
 
             elif result > 0:
                 for i in range(10):
                     r_list[-9 + i] += (result +2* i)
-
                 reward = 0
 
             else:
                 reward = 1
-
             reward_sum += reward
             r_list.append(reward)
 

@@ -28,4 +28,6 @@
 ##### 그러니 게임류 RL 프로젝트 수행에 있어서는 해당 settings의 데이터를 모두 사용할 수 있는 API(Starcraft,Minecraft) 라던지, 훌륭한 데이터 수집 노가다를 겪어야만 한다는게 기정사실이니 절대 토이 프로젝트로 삼지 말길 바란다.
 
 ### 프로젝트 체험해보기
-#### 현재 학습중
+##### base Files를 다운로드 받은 후에 원하는 캐릭터를 고른 뒤 save.pt에 덮어씌우고 train.py를 실행 
+##### 명령어 종류 --cuda(gpu로 하겠다는 뜻) 
+[PT base Files](https://drive.google.com/drive/folders/1oB9-tr8D6isZA5jatHZiMwlbeOFMLo5q?usp=sharing)
