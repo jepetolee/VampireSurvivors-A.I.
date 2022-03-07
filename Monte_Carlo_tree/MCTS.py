@@ -6,25 +6,33 @@ class Node:
     def __init__(self):
         self.tensor = np.zeros((100, 30), np.int32)
         self.episode = np.zeros((100, 30), np.int32)
+        self.count = np.ones((100,30),np.int32)
         self.sequence = 0
 
     def update(self, score):
         for episode in range(self.sequence):
             for idx in range(30):
-                #self.tensor[episode][idx] =0
+                # self.tensor[episode][idx] =0
                 if self.episode[episode][idx] == 1:
                     self.tensor[episode][idx] += score
 
     def choose(self, items):
-
+        """
+        searching_algorithm = thompson sampling
+        https://web.stanford.edu/~bvr/pubs/TS_Tutorial.pdf
+        """
         self.items = items
-        idx = 0
-        for index in self.items:
-            if self.tensor[self.sequence][index] > self.tensor[self.sequence][idx]:
-                idx = index
+        samples = np.random.normal(loc=self.tensor[self.sequence], scale=( 1 / np.sqrt(self.count[self.sequence]) )  )
+        idx = items[0]
+
+        for i in range(len(items)):
+            if samples[items[i]]>samples[idx]:
+                idx = items[i]
+
         return idx
 
     def backup(self):
+        self.count = np.load("Monte_Carlo_tree/count.npy")
         self.tensor = np.load("Monte_Carlo_tree/mcts.npy")
 
 
@@ -34,12 +42,9 @@ class MCTS_Node:
         self.idx = 0
         self.sequence = self.node.sequence
 
-    def search(self, items, rollout=True):
+    def search(self, items):
 
-        if rollout:
-            self.idx = random.choice(items)
-        else:
-            self.idx = self.node.choose(items)
+        self.idx = self.node.choose(items)
 
         move = 0
         for i in range(len(items)):
@@ -57,6 +62,8 @@ class MCTS_Node:
         self.node.backup()
 
     def save(self):
+        self.node.count += self.node.episode
+        np.save("Monte_Carlo_tree/count", self.node.count)
         np.save("Monte_Carlo_tree/mcts", self.node.tensor)
 
     def mcts_vector(self):
@@ -68,8 +75,8 @@ class MCTS:
     def __init__(self):
         self.Node = MCTS_Node()
 
-    def input(self, items, rollout=True):
-        return self.Node.search(items, rollout)
+    def input(self, items):
+        return self.Node.search(items)
 
     def append_reward(self, reward):
         self.Node.update(reward)

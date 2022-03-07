@@ -5,6 +5,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
 from torch.distributions import Categorical
+from tqdm import trange
 import gc
 import time
 
@@ -20,13 +21,13 @@ def train():
 
     epoch = 100000
     model = module.A2C()
-    device = torch.device('cuda')
+    device = torch.device('cpu')
     model.to(device)
     model.load_state_dict(torch.load('./save.pt'))
 
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
-    while epoch > 0:
+    for t in trange(epoch):
         model.to(device)
         s_list, a_list, r_list, policy_list, mcts_list = agent.run_once(model, device)
         s_len = len(s_list)
@@ -138,9 +139,8 @@ def train():
                 loss.backward(retain_graph=True)
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
                 optimizer.step()
-        if epoch % 20 == 0:
+        if t % 20 == 0:
             torch.save(model.state_dict(), "./save.pt")
-        epoch -= 1
 
         model.del_dat()
         torch.cuda.empty_cache()
